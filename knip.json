@@ -1,0 +1,20 @@
+{
+  "workspaces": {
+    "packages/ui": {
+      "includeEntryExports": true,
+      "entry": ["src/**/*.{ts,tsx}"],
+      "project": ["src/**/*.{ts,tsx}"]
+    },
+    "packages/rules": {
+      "entry": ["src/plugins/**/*.ts"],
+      "project": ["src/plugins/**/*.ts"]
+    }
+  },
+  "ignoreDependencies": [
+    "@oxlint/binding-darwin-arm64",
+    "@rollup/rollup-darwin-arm64",
+    "@repo/oxlint-config"
+  ],
+  "ignoreBinaries": ["tsx"],
+  "ignore": ["**/*.stories.tsx"]
+}

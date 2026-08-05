@@ -1,0 +1,8 @@
+{
+  "name": "@repo/oxc-formatter-config",
+  "version": "0.0.0",
+  "description": "Shared OXC formatter configuration",
+  "main": "oxfmt.json",
+  "type": "module",
+  "license": "MIT"
+}

@@ -1,0 +1,9 @@
+{
+  "extends": ["./.oxlintrc.json"],
+  "rules": {
+    "template/jsx-sort-props": "off",
+    "template-handle-call/no-handle-calls-handle": "off",
+    "template-on-call/no-handle-calls-on": "off",
+    "react/jsx-handler-names": "off"
+  }
+}

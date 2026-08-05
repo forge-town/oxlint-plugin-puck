@@ -1,0 +1,22 @@
+{
+  "extends": ["../oxlint-config/non-react.oxlintrc.json"],
+  "rules": {
+    "template-vars/no-let": "off",
+    "template-effect/no-use-effect": "off",
+    "template-error/no-try": "off",
+    "template-return/newline-before-return": "off",
+    "template-component/atomic-component": "off",
+    "template-schema/atomic-schema": "off",
+    "template-store/no-component-handlers": "off",
+    "template-store/no-handle-return-function": "off",
+    "template-handle-call/no-handle-calls-handle": "off",
+    "template-on-call/no-handle-calls-on": "off",
+    "template-jsx-callback/strict-jsx-callback-handler": "off",
+    "template-handler-verb/strict-jsx-handler-verb": "off",
+    "template-method/strict-method-module": "off",
+    "template-refine/no-use-list-data-fallback": "off",
+    "template-env/no-process-env-outside-integration": "off",
+    "template-types/no-explicit-unknown": "off",
+    "template/jsx-sort-props": "off"
+  }
+}

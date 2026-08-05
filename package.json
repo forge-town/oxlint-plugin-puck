@@ -1,0 +1,46 @@
+{
+  "name": "oxlint-plugin-puck",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "prepare": "lefthook install",
+    "test": "turbo run test -- --run",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types",
+    "quality": "turbo quality",
+    "knip": "knip",
+    "storybook": "turbo run storybook",
+    "build-storybook": "turbo run build-storybook",
+    "sync-skills": "bunx skills add https://github.com/forge-town/skills",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish",
+    "check-circular": "madge --circular packages/*/src/index.ts",
+    "deps-graph": "madge --image packages-dependency-graph.svg packages/*/src/index.ts",
+    "deps-graph-png": "madge --image packages-dependency-graph.png packages/*/src/index.ts"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.6.0",
+    "@changesets/cli": "^2.31.0",
+    "@oxlint/binding-darwin-arm64": "^1.59.0",
+    "@rollup/rollup-darwin-arm64": "^4.60.1",
+    "@typescript-eslint/utils": "^8.42.0",
+    "knip": "^6.4.0",
+    "lefthook": "^2.1.9",
+    "madge": "^8.0.0",
+    "oxlint": "^1.59.0",
+    "prettier": "^3.7.4",
+    "turbo": "^2.8.21",
+    "typescript": "5.9.2"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "bun@1.3.11",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
