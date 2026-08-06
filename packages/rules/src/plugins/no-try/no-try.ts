@@ -3,7 +3,7 @@
  * Use neverthrow for functional error handling instead.
  */
 
-import type { OxlintRuleModule } from "../types.js";
+import type { OxlintRuleModule } from "../../types.js";
 
 const noTryRule: OxlintRuleModule<"noTry"> = {
   meta: {

@@ -8,11 +8,17 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "check-types": "tsc -p tsconfig.json",
-    "lint": "oxlint --config ./.oxlintrc.json src/"
+    "lint": "oxlint --config ./.oxlintrc.json src/",
+    "test": "vitest run"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.6",
     "@repo/typescript-config": "workspace:*",
+    "@types/node": "^25.6.0",
+    "@typescript-eslint/parser": "^8.66.0",
     "@typescript-eslint/utils": "^8.42.0",
-    "typescript": "5.9.2"
+    "eslint": "^10",
+    "typescript": "5.9.2",
+    "vitest": "^4.1.4"
   }
 }

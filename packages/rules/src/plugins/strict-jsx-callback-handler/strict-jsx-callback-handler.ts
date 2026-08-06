@@ -2,7 +2,7 @@
  * @fileoverview Oxlint JS plugin: require JSX on* callbacks to use handle* identifiers.
  */
 
-import type { OxlintRuleContext, OxlintRuleModule, TSESTree } from "../types.js";
+import type { OxlintRuleContext, OxlintRuleModule, TSESTree } from "../../types.js";
 
 type SourceCodeWithFilename = { filename?: string };
 

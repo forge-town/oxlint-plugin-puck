@@ -2,7 +2,7 @@
  * @fileoverview Oxlint JS plugin: disallow handle callbacks from calling other handle callbacks.
  */
 
-import type { OxlintRuleContext, OxlintRuleModule, TSESTree } from "../types.js";
+import type { OxlintRuleContext, OxlintRuleModule, TSESTree } from "../../types.js";
 
 type SourceCodeWithFilename = { filename?: string };
 

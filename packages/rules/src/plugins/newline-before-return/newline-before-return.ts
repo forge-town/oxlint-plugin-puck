@@ -2,7 +2,7 @@
  * @fileoverview Oxlint JS plugin: Enforce exactly one blank line before return statements.
  */
 
-import type { OxlintRuleContext, OxlintRuleModule, TSESLint, TSESTree } from "../types.js";
+import type { OxlintRuleContext, OxlintRuleModule, TSESLint, TSESTree } from "../../types.js";
 
 function getSourceCode(context: OxlintRuleContext<"expected" | "unexpected">): TSESLint.SourceCode {
   return context.getSourceCode ? context.getSourceCode() : context.sourceCode;

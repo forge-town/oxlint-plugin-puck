@@ -2,7 +2,7 @@
  * @fileoverview Oxlint JS plugin: Disallow direct process.env usage outside env integrations.
  */
 
-import type { OxlintRuleContext, OxlintRuleModule } from "../types.js";
+import type { OxlintRuleContext, OxlintRuleModule } from "../../types.js";
 
 type SourceCodeWithFilename = { filename?: string };
 

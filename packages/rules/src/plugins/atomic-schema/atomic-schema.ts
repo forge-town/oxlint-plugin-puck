@@ -1,5 +1,5 @@
 import type { TSESLint, TSESTree } from "@typescript-eslint/utils";
-import type { OxlintRuleContext, OxlintRuleModule } from "../types.js";
+import type { OxlintRuleContext, OxlintRuleModule } from "../../types.js";
 
 /**
  * @fileoverview Oxlint JS plugin: enforce atomic schema modules.

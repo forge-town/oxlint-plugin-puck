@@ -2,7 +2,7 @@
  * @fileoverview Oxlint JS plugin: Disallow fallback arrays for Refine useList result data.
  */
 
-import type { OxlintRuleModule, TSESTree } from "../types.js";
+import type { OxlintRuleModule, TSESTree } from "../../types.js";
 
 const unwrapExpression = (node: TSESTree.Node | null | undefined): TSESTree.Node | null | undefined => {
   if (node && (node.type === "ChainExpression" || node.type === "TSAsExpression" || node.type === "TSSatisfiesExpression" || node.type === "TSNonNullExpression")) {
