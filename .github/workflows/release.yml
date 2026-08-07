@@ -28,6 +28,8 @@ jobs:
           scope: "@forge-town"
 
       - run: bun install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: bun run quality
       - run: bun run build
 

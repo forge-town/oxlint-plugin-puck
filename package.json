@@ -33,6 +33,7 @@
     "madge": "^8.0.0",
     "oxfmt": "^0.52.0",
     "oxlint": "^1.59.0",
+    "oxlint-plugin-puck-published": "npm:@forge-town/oxlint-plugin-puck@latest",
     "turbo": "^2.8.21",
     "typescript": "5.9.2"
   },

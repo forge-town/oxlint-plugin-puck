@@ -16,6 +16,8 @@ packages/
 
 `packages/rules/src/index.ts` 聚合所有被维护的规则。`apps/core/src/index.ts` 只负责定义最终的 `puck` plugin，并在构建时把内部规则 bundle 到 `dist/index.js`，因此发布包没有 `@repo/*` 运行时依赖。
 
+仓库自身通过根依赖 `oxlint-plugin-puck-published` 消费已经发布的 package，所有内部 `.oxlintrc.json` 都从该 alias 加载 plugin。alias 使用 registry 的 `latest` dist-tag 避免同名的 `apps/core` 被误当成已发布产物，`bun.lock` 固定实际版本；`apps/core` 对 `@repo/rules` 的显式 `workspace:*` 构建依赖仍然保留。
+
 ## 本地开发
 
 ```sh

@@ -1,6 +1,11 @@
 {
   "extends": ["../../packages/oxlint-config/.oxlintrc.json"],
-  "jsPlugins": ["../../apps/core/src/index.ts"],
+  "jsPlugins": [
+    {
+      "name": "puck",
+      "specifier": "oxlint-plugin-puck-published"
+    }
+  ],
   "rules": {
     "puck/jsx-sort-props": "off",
     "react/jsx-handler-names": "off",

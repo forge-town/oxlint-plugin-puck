@@ -1,6 +1,11 @@
 {
   "extends": ["../oxlint-config/non-react.oxlintrc.json"],
-  "jsPlugins": ["../../apps/core/src/index.ts"],
+  "jsPlugins": [
+    {
+      "name": "puck",
+      "specifier": "oxlint-plugin-puck-published"
+    }
+  ],
   "rules": {
     "puck/no-let": "off",
     "puck/no-use-effect": "off",
