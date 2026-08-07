@@ -1,0 +1,38 @@
+{
+  "name": "@forge-town/oxlint-plugin-puck",
+  "version": "0.0.0",
+  "description": "Forge Town's bundled Oxlint plugin distribution",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/forge-town/oxlint-plugin-puck.git",
+    "directory": "apps/core"
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "registry": "https://npm.pkg.github.com"
+  },
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target node --format esm --packages bundle",
+    "check-types": "tsc -p tsconfig.json",
+    "lint": "oxlint --config ./.oxlintrc.json src/",
+    "prepack": "bun run build",
+    "test": "vitest run",
+    "quality": "bun run check-types && bun run lint && bun run test"
+  },
+  "devDependencies": {
+    "@repo/rules": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "typescript": "5.9.2",
+    "vitest": "^4.1.4"
+  }
+}

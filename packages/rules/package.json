@@ -1,11 +1,12 @@
 {
   "name": "@repo/rules",
   "version": "0.0.0",
-  "description": "Custom oxlint plugin rules (TypeScript source, compiled to JS)",
+  "private": true,
+  "description": "Internal rule implementations for Oxlint Plugin Puck",
   "license": "MIT",
-  "files": [
-    "dist"
-  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -15,7 +16,6 @@
     "quality": "bun run check-types && bun run lint && bun run test"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.6",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^25.6.0",
     "@typescript-eslint/parser": "^8.66.0",

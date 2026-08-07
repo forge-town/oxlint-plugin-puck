@@ -10,34 +10,42 @@ const GettingStartedPage = () => {
       prev={{ title: "介绍", to: "/docs" }}
     >
       <p>
-        Puck 规则以 Oxlint JS 插件形式分发。你可以直接引用 <code>packages/rules/src/plugins</code>{" "}
-        下的 TypeScript 源文件（需要 Node ≥22.18 的原生 type-stripping）， 或引用编译后的{" "}
-        <code>dist/plugins/*.js</code> 产物。
+        Puck 规则通过 Forge Town 的私有 GitHub Package 分发。安装一个插件包后，即可通过统一的{" "}
+        <code>puck/*</code> 命名空间使用全部规则。
       </p>
 
-      <h2>1. 安装 Oxlint</h2>
+      <h2>1. 配置 Forge Town registry</h2>
       <pre>
-        <code>{`bun add -D oxlint`}</code>
+        <code>{`# .npmrc
+@forge-town:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=\${NODE_AUTH_TOKEN}`}</code>
       </pre>
 
-      <h2>2. 配置 .oxlintrc.json</h2>
+      <h2>2. 安装 Oxlint 与 Puck</h2>
+      <pre>
+        <code>{`bun add -D oxlint @forge-town/oxlint-plugin-puck`}</code>
+      </pre>
+
+      <h2>3. 配置 .oxlintrc.json</h2>
       <p>
-        将需要的插件注册到 <code>jsPlugins</code>，并在 <code>rules</code> 中开启对应规则：
+        注册一次 Puck plugin，并在 <code>rules</code> 中开启需要的规则：
       </p>
       <pre>
         <code>{`{
   "jsPlugins": [
-    "./node_modules/@repo/rules/dist/plugins/no-let/no-let.js",
-    "./node_modules/@repo/rules/dist/plugins/strict-method-module/strict-method-module.js"
+    {
+      "name": "puck",
+      "specifier": "@forge-town/oxlint-plugin-puck"
+    }
   ],
   "rules": {
-    "template-vars/no-let": "error",
-    "template-method/strict-method-module": "error"
+    "puck/no-let": "error",
+    "puck/strict-method-module": "error"
   }
 }`}</code>
       </pre>
 
-      <h2>3. 运行检查</h2>
+      <h2>4. 运行检查</h2>
       <pre>
         <code>{`bunx oxlint --config .oxlintrc.json src/`}</code>
       </pre>

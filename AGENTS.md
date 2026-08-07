@@ -8,6 +8,7 @@
 monorepo-template-bun/
 ├── apps/                          # 应用模板
 │   ├── docs/                      # TanStack Start 技术文档项目
+│   ├── core/                      # Oxlint plugin 的薄分发与发布层
 │   ├── payloadcms-website-template/    # Next.js + Payload CMS 内容管理网站
 │   └── tauri-app-template/        # Tauri + Vite 跨平台桌面应用
 ├── packages/                      # 共享包
@@ -16,8 +17,8 @@ monorepo-template-bun/
 │   ├── schemas/                   # Zod schema 定义（@repo/schemas）
 │   ├── shared/                    # 通用工具函数（@repo/shared）
 │   ├── typescript-config/         # 共享 TS 配置（base/nextjs/react-library）
-│   ├── rules/                     # 自定义 Oxlint JS 规则（@repo/rules）
-│   ├── oxlint-config/             # 共享 Oxlint 配置（引用 @repo/rules 的插件）
+│   ├── rules/                     # Oxlint 规则实现、测试与内部 registry
+│   ├── oxlint-config/             # 共享 Oxlint 配置（消费 apps/core）
 │   └── oxc-formatter-config/      # 共享 Oxc 格式化配置
 ├── scripts/
 │   └── create-monorepo-app/       # 项目创建 CLI（Node.js 20+，ESM）
@@ -131,7 +132,8 @@ create-monorepo-app --template-dir /path/to/template
 | packages/schemas | @repo/schemas | `workspace:*` |
 | packages/shared | @repo/shared | `workspace:*` |
 | packages/typescript-config | @repo/typescript-config | `workspace:*` |
-| packages/rules | @repo/rules | `workspace:*` |
+| packages/rules | @repo/rules | `workspace:*`（私有） |
+| apps/core | @forge-town/oxlint-plugin-puck | GitHub Packages 私有包 |
 | packages/oxlint-config | @repo/oxlint-config | `workspace:*` |
 | packages/oxc-formatter-config | @repo/oxc-formatter-config | `workspace:*` |
 
@@ -176,14 +178,14 @@ import { cn } from "@repo/ui/lib/utils";
 - Skills 位于 `.agents/skills/`，每个 Skill 包含 `SKILL.md` + `references/` 目录
 - 模板仓库本身可直接开发，CLI 会优先检测当前目录是否为有效模板根（含 `apps/`, `packages/`, `turbo.json`）
 
-## packages/rules 维护工作流
+## Puck 规则维护与分发工作流
 
-`packages/rules` 是自定义 Oxlint JS 规则（模板业务规则）的维护仓库，源码以 TypeScript 编写于 `src/plugins/*.ts`，通过 `tsc` 编译为 ESM 产物到 `dist/plugins/*.js`。
+`packages/rules` 是规则维护层，源码与测试位于 `src/plugins/*.ts`，由 `src/index.ts` 聚合成内部 rules registry。`apps/core` 是薄分发层，只负责把该 registry 适配成单个 `puck` plugin，并 bundle 为可发布的 `dist/index.js`。
 
 - 16 个规则源文件均为 `OxlintRuleModule<MessageIds>` 类型化模块，`meta.type`、`meta.messages`、`create(context)` 返回 `TSESLint.RuleListener`
 - 共享类型在 `src/types.ts`：`OxlintRuleContext`（扩展 oxlint 的 `filename`/`physicalFilename`）、`OxlintRuleModule`
 - 语法约束 `erasableSyntaxOnly`（禁 enum/namespace/参数属性），模块解析 NodeNext，类型 import 一律带 `.js` 后缀
-- oxlint 通过 `jsPlugins` 直接加载 `src/plugins/*.ts`（Node ≥22.18 原生 type-stripping），消费方老版本则加载 `dist/` 编译产物
+- 仓库内 oxlint 通过 `jsPlugins` 加载 `apps/core/src/index.ts`；外部消费方通过 `@forge-town/oxlint-plugin-puck` 加载 bundle 后的 `dist/index.js`
 - 新增/修改规则后执行：`bun run check-types`（tsc 严格模式）→ `bun run lint`（加载 .ts 插件，模板规则对自身源码已豁免）→ `bun run build`（产出 dist/）
-- 编译产物需同步到消费项目：`cp packages/rules/dist/plugins/*.js <consumer>/packages/oxlint-config/plugins/`，并在消费方 lint 验证
-- `.oxlintrc.json`（`packages/oxlint-config/`）的 `jsPlugins` 与 `knip.json` 的 `packages/rules` entry/project 均指向 `src/plugins/**/*.ts`
+- `packages/rules` 禁止发布；`apps/core` 是唯一 Changesets 发布单元，构建产物不得保留 `@repo/*` 运行时依赖
+- `.oxlintrc.json` 的 `jsPlugins` 以 `apps/core/src/index.ts` 为入口；`knip.json` 同时覆盖维护层与分发层

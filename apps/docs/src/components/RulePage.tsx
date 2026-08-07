@@ -217,7 +217,10 @@ export const RulePage = ({ rule, prev, next }: RulePageProps) => {
             <pre className="overflow-x-auto p-4 text-sm leading-relaxed">
               <code>{`{
   "jsPlugins": [
-    "./node_modules/@repo/rules/dist/plugins/${rule.id}/${rule.id}.js"
+    {
+      "name": "puck",
+      "specifier": "@forge-town/oxlint-plugin-puck"
+    }
   ],
   "rules": {
     "${rule.pluginKey}": "error"
@@ -231,7 +234,7 @@ export const RulePage = ({ rule, prev, next }: RulePageProps) => {
             <li>
               <a
                 className="inline-flex items-center gap-1 text-primary hover:underline"
-                href={`https://github.com/repo/oxlint-plugin-puck/tree/main/packages/rules/src/plugins/${rule.id}/${rule.id}.ts`}
+                href={`https://github.com/forge-town/oxlint-plugin-puck/tree/main/packages/rules/src/plugins/${rule.id}/${rule.id}.ts`}
                 rel="noreferrer"
                 target="_blank"
               >

@@ -1,3 +1,4 @@
 {
-  "extends": ["../oxlint-config/non-react.oxlintrc.json"]
+  "extends": ["../oxlint-config/non-react.oxlintrc.json"],
+  "jsPlugins": ["../../apps/core/src/index.ts"]
 }

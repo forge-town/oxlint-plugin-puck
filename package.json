@@ -9,7 +9,7 @@
     "lint": "turbo run lint",
     "format": "oxfmt --config packages/oxc-formatter-config/oxfmt.json --write apps packages",
     "check-types": "turbo run check-types",
-    "quality": "turbo quality",
+    "quality": "turbo run quality",
     "knip": "knip",
     "storybook": "turbo run storybook",
     "build-storybook": "turbo run build-storybook",

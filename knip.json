@@ -5,9 +5,11 @@
       "entry": ["src/**/*.{ts,tsx}"],
       "project": ["src/**/*.{ts,tsx}"]
     },
+    "apps/core": {
+      "project": ["src/**/*.ts"]
+    },
     "packages/rules": {
-      "entry": ["src/plugins/**/*.ts"],
-      "project": ["src/plugins/**/*.ts"]
+      "project": ["src/**/*.ts"]
     }
   },
   "ignoreDependencies": [

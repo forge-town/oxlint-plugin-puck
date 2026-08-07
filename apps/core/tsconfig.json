@@ -1,9 +1,11 @@
 {
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "declaration": false,
+    "declarationMap": false,
     "erasableSyntaxOnly": true,
     "noEmit": true,
-    "rewriteRelativeImportExtensions": true,
     "verbatimModuleSyntax": true
   },
   "include": ["src/**/*.ts"]

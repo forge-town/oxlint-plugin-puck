@@ -1,201 +1,90 @@
-# Monorepo Template (Bun + Turborepo)
+# Oxlint Plugin Puck
 
-一个基于 [Bun](https://bun.sh/) 和 [Turborepo](https://turbo.build/) 的 monorepo 项目模板，内置多个可直接使用的应用模板。通过命令行工具 `create-monorepo-app` 一键拆分模板，生成你的新项目。
+Forge Town 内部维护的 Oxlint JS plugin。规则实现在 `packages/rules` 维护，`apps/core` 是独立的分发适配层，并以私有 GitHub Package `@forge-town/oxlint-plugin-puck` 发布。
 
----
+## 仓库结构
 
-## 快速开始：创建新项目
-
-### 1. 克隆模板仓库
-
-```sh
-git clone <repo-url> monorepo-template-bun
-cd monorepo-template-bun
+```text
+apps/
+├── core/                # 薄分发层：适配、bundle、发布
+└── docs/                # 规则文档站
+packages/
+├── rules/               # 规则实现、单元测试与内部 registry
+├── oxlint-config/       # 仓库内部共享的 Oxlint 配置
+└── ...                  # 其他内部共享包
 ```
 
-### 2. 全局安装 CLI
+`packages/rules/src/index.ts` 聚合所有被维护的规则。`apps/core/src/index.ts` 只负责定义最终的 `puck` plugin，并在构建时把内部规则 bundle 到 `dist/index.js`，因此发布包没有 `@repo/*` 运行时依赖。
 
-在模板仓库根目录执行：
+## 本地开发
 
 ```sh
-cd scripts/create-monorepo-app
 bun install
-bun link
-```
-
-安装完成后，在任意位置都能用 `create-monorepo-app` 命令。
-
-> 脚本会自动检测当前目录是否是模板仓库，因此在模板仓库内直接运行即可。如果在其他目录运行，需加 `--template-dir` 参数指定模板位置。
-
-### 3. 运行创建脚本
-
-在模板仓库根目录运行：
-
-```sh
-cd /path/to/monorepo-template-bun
-create-monorepo-app
-```
-
-或在其他目录指定模板位置：
-
-```sh
-create-monorepo-app --template-dir /path/to/monorepo-template-bun
-```
-
-### 交互流程
-
-运行命令后，脚本会引导你完成以下步骤：
-
-1. **输入项目名称** — 例如 `my-new-project`
-2. **指定输出目录** — 默认 `./<project-name>`
-3. **选择 App 模板** — 多选你想要包含的应用模板
-
-```
-? Project name: my-new-project
-? Output directory: ./my-new-project
-? Select app templates to include:
-  ◉ docs
-  ◉ payloadcms-website-template
-  ◉ expo-react-native-template
-  ◉ hono-server-template
-  ◉ tauri-app-template
-  ◉ uniapp-mp-weixin-template
-  ◉ wxt-browser-extension-template
-```
-
-完成后，进入项目并安装依赖：
-
-```sh
-cd my-new-project
-bun install
-bun run dev
-```
-
----
-
-## 模板中包含的内容
-
-### App 模板
-
-| 模板 | 技术栈 | 说明 |
-|------|--------|------|
-| `expo-react-native-template` | Expo + React Native | 基于 Expo 官方默认模板并预置 NativeWind/Tailwind CSS |
-| `hono-server-template` | Hono + Bun | 从 Ordine 服务端抽出的轻量 API 服务模板 |
-| `docs` | TanStack Start | 技术文档项目（文件路由 + 侧边栏导航） |
-| `payloadcms-website-template` | Next.js + Payload CMS | 基于 Payload CMS 的内容管理网站 |
-| `tauri-app-template` | Tauri + Vite | 跨平台桌面应用 |
-| `uniapp-mp-weixin-template` | uni-app + Vue 3 | 面向微信小程序的 uni-app 模板 |
-| `wxt-browser-extension-template` | WXT + React | 基于 WXT 的浏览器插件模板，预置 Zustand 状态示例 |
-
-### 共享 Packages
-
-- `@repo/ui` — React 组件库，供各应用共享
-- `@repo/logger` — 日志工具
-- `@repo/schemas` — 数据校验 schema
-- `@repo/shared` — 通用工具函数
-- `@repo/typescript-config` — 共享 TypeScript 配置
-- `@repo/rules` — 自定义 Oxlint JS 规则
-- `@repo/oxlint-config` — 共享 Oxlint 配置
-- `@repo/oxc-formatter-config` — 共享 Oxc 格式化配置
-
----
-
-## 技术栈
-
-- **包管理器**: [Bun](https://bun.sh/) (v1.3.11+)
-- **任务编排**: [Turborepo](https://turbo.build/) — 缓存、并行构建
-- **类型检查**: TypeScript 5.9
-- **代码检查**: [Oxlint](https://oxc.rs/docs/guide/usage/linter.html) — 替代 ESLint，速度更快
-- **代码格式化**: Prettier + Oxc
-- **包发布**: [Changesets](https://github.com/changesets/changesets) — 版本管理与发布
-- **无用代码检测**: [Knip](https://knip.dev/)
-
----
-
-## 常用命令
-
-```sh
-# 开发所有应用
-bun run dev
-
-# 构建所有应用和包
-bun run build
-
-# 运行测试
-bun run test
-
-# 代码检查
-bun run lint
-
-# 类型检查
-bun run check-types
-
-# 质量检查（lint + type + test）
 bun run quality
-
-# 提交前安装 Lefthook，并通过 pre-commit 执行质量检查
-bun run prepare
-
-# 格式化代码
-bun run format
-
-# 检测无用依赖/导出
-bun run knip
-
-# 版本管理与发布
-bun run changeset         # 记录变更，生成 changelog 输入
-bun run version-packages  # 更新版本并生成 CHANGELOG.md
-bun run release           # 发布包
+bun run build
 ```
 
-### 针对单个应用
+分别验证规则维护层和分发层：
 
 ```sh
-# 只开发 web 应用
-bun run dev --filter=web
-
-# 只构建某个应用
-bun run build --filter=payloadcms-website-template
+bun run --cwd packages/rules quality
+bun run --cwd apps/core quality
+bun run --cwd apps/core build
+npm pack --dry-run ./apps/core
 ```
 
----
+## 安装私有包
 
-## 项目结构
+消费项目需要配置 GitHub Packages registry：
 
-```
-monorepo-template-bun/
-├── apps/                          # 应用模板
-│   ├── docs/
-│   ├── expo-react-native-template/
-│   ├── hono-server-template/
-│   ├── payloadcms-website-template/
-│   ├── tauri-app-template/
-│   ├── uniapp-mp-weixin-template/
-│   └── wxt-browser-extension-template/
-├── packages/                      # 共享包
-│   ├── ui/                        # React 组件库
-│   ├── logger/                    # 日志
-│   ├── schemas/                   # Schema 定义
-│   ├── shared/                    # 通用工具
-│   ├── typescript-config/         # TS 配置
-│   ├── rules/                     # 自定义 Oxlint 规则
-│   ├── oxlint-config/             # Linter 配置
-│   └── oxc-formatter-config/      # 格式化配置
-├── scripts/
-│   └── create-monorepo-app/       # 项目创建脚本
-├── turbo.json                     # Turborepo 任务配置
-└── package.json                   # 工作区根配置
+```ini
+# .npmrc
+@forge-town:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
 ```
 
----
+`NODE_AUTH_TOKEN` 使用具有 `read:packages` 权限的 GitHub classic PAT：
 
-## 环境要求
+```sh
+export NODE_AUTH_TOKEN=github_pat_xxx
+bun add --dev oxlint @forge-town/oxlint-plugin-puck
+```
 
-- [Node.js](https://nodejs.org/) >= 20
-- [Bun](https://bun.sh/) >= 1.3.11
+配置 Oxlint：
 
----
+```json
+{
+  "jsPlugins": [
+    {
+      "name": "puck",
+      "specifier": "@forge-town/oxlint-plugin-puck"
+    }
+  ],
+  "rules": {
+    "puck/no-let": "error",
+    "puck/strict-method-module": "error"
+  }
+}
+```
 
-## License
+## 发布
 
-MIT
+每次需要发布的改动都要创建 Changeset：
+
+```sh
+bun run changeset
+```
+
+合并到 `main` 后，`.github/workflows/release.yml` 会通过 Changesets 创建版本 PR；版本 PR 合并后使用仓库的 `GITHUB_TOKEN` 发布到 Forge Town GitHub Packages。
+
+手动发布前先配置具有 `write:packages` 权限的 token：
+
+```sh
+export NODE_AUTH_TOKEN=github_pat_xxx
+bun run quality
+bun run build
+bun run version-packages
+bun run release
+```
+
+不要把 GitHub token 写入或提交到 `.npmrc`。

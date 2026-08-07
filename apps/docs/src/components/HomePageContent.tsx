@@ -12,12 +12,11 @@ import { Typewriter } from "./Typewriter";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 const terminalLines = [
-  "$ bun add -D oxlint",
-  "$ cp -r packages/rules/dist/plugins/* ./plugins/",
+  "$ bun add -D oxlint @forge-town/oxlint-plugin-puck",
   "$ cat .oxlintrc.json",
   "{",
-  '  "jsPlugins": ["./plugins/strict-method-module/strict-method-module.js"],',
-  '  "rules": { "template-method/strict-method-module": "error" }',
+  '  "jsPlugins": [{ "name": "puck", "specifier": "@forge-town/oxlint-plugin-puck" }],',
+  '  "rules": { "puck/strict-method-module": "error" }',
   "}",
   "$ bunx oxlint --config .oxlintrc.json src/",
 ];
