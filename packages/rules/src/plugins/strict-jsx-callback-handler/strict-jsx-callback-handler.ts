@@ -7,7 +7,11 @@ import type { OxlintRuleContext, OxlintRuleModule, TSESTree } from "../../types.
 type SourceCodeWithFilename = { filename?: string };
 
 const getFilename = (context: OxlintRuleContext): string =>
-  context.filename ?? context.physicalFilename ?? context.getFilename?.() ?? (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ?? "";
+  context.filename ??
+  context.physicalFilename ??
+  context.getFilename?.() ??
+  (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ??
+  "";
 
 const normalizePath = (filename: string): string => filename.replaceAll("\\", "/");
 
@@ -24,7 +28,9 @@ const isIgnoredFile = (filename: string): boolean => {
   );
 };
 
-const unwrapExpression = (node: TSESTree.Node | null | undefined): TSESTree.Node | null | undefined => {
+const unwrapExpression = (
+  node: TSESTree.Node | null | undefined
+): TSESTree.Node | null | undefined => {
   if (
     node &&
     (node.type === "ChainExpression" ||
@@ -121,7 +127,10 @@ const isReactHookFormFieldCallback = (node: TSESTree.Node): boolean => {
   );
 };
 
-const isHandleBindCallWithLocalObjects = (node: TSESTree.Node, localObjectNames: Set<string>): boolean => {
+const isHandleBindCallWithLocalObjects = (
+  node: TSESTree.Node,
+  localObjectNames: Set<string>
+): boolean => {
   const expression = unwrapExpression(node);
 
   if (expression?.type !== "CallExpression") {
@@ -137,7 +146,10 @@ const isHandleBindCallWithLocalObjects = (node: TSESTree.Node, localObjectNames:
   return isHandleIdentifier(callee.object) || isHandleMember(callee.object, localObjectNames);
 };
 
-const isAllowedCallbackExpression = (node: TSESTree.Node, localObjectNames: Set<string>): boolean => {
+const isAllowedCallbackExpression = (
+  node: TSESTree.Node,
+  localObjectNames: Set<string>
+): boolean => {
   return (
     isHandleIdentifier(node) ||
     isHandleMember(node, localObjectNames) ||

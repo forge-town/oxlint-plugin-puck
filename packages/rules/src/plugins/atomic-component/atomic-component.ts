@@ -61,7 +61,9 @@ const getExpectedComponentName = (filename: string): string => {
   return isPascalCaseName(parentName) ? parentName : "";
 };
 
-const unwrapExpression = (node: TSESTree.Node | null | undefined): TSESTree.Node | null | undefined => {
+const unwrapExpression = (
+  node: TSESTree.Node | null | undefined
+): TSESTree.Node | null | undefined => {
   if (
     node &&
     (node.type === "ChainExpression" ||
@@ -110,10 +112,10 @@ const isComponentWrapperCall = (node: TSESTree.CallExpression): boolean => {
   const calleeName = getCalleeName(node.callee);
 
   return calleeName === "memo" || calleeName === "forwardRef";
-}
+};
 
 const getFunctionExpression = (
-  node: TSESTree.Node | null | undefined,
+  node: TSESTree.Node | null | undefined
 ): TSESTree.ArrowFunctionExpression | TSESTree.FunctionExpression | null => {
   const expression = unwrapExpression(node);
 
@@ -139,7 +141,10 @@ const containsJsx = (node: unknown, seen = new WeakSet<object>()): boolean => {
 
   seen.add(node);
 
-  if ((node as TSESTree.Node).type === "JSXElement" || (node as TSESTree.Node).type === "JSXFragment") {
+  if (
+    (node as TSESTree.Node).type === "JSXElement" ||
+    (node as TSESTree.Node).type === "JSXFragment"
+  ) {
     return true;
   }
 
@@ -168,7 +173,7 @@ const functionReturnsJsx = (
   functionNode:
     | TSESTree.FunctionDeclaration
     | TSESTree.ArrowFunctionExpression
-    | TSESTree.FunctionExpression,
+    | TSESTree.FunctionExpression
 ): boolean => {
   const body = unwrapExpression(functionNode.body);
 
@@ -181,7 +186,7 @@ const functionReturnsJsx = (
   }
 
   return body.body.some(
-    (statement) => statement.type === "ReturnStatement" && containsJsx(statement.argument),
+    (statement) => statement.type === "ReturnStatement" && containsJsx(statement.argument)
   );
 };
 
@@ -206,7 +211,7 @@ const getExportSpecifierName = (specifier: TSESTree.ExportSpecifier): string =>
 
 const getExportKind = (
   statement: TSESTree.ExportNamedDeclaration,
-  specifier?: TSESTree.ExportSpecifier,
+  specifier?: TSESTree.ExportSpecifier
 ): "type" | "value" => {
   if (statement.exportKind === "type" || specifier?.exportKind === "type") {
     return "type";
@@ -220,7 +225,7 @@ const getExportKind = (
   }
 
   return "value";
-}
+};
 
 type LocalDeclaration = {
   name: string;
@@ -231,7 +236,7 @@ type LocalDeclaration = {
 
 const collectVariableDeclarations = (
   declaration: TSESTree.VariableDeclaration,
-  declarations: LocalDeclaration[],
+  declarations: LocalDeclaration[]
 ): void => {
   for (const declarator of declaration.declarations ?? []) {
     if (declarator.id?.type !== "Identifier") {
@@ -345,7 +350,7 @@ const collectLocalExports = (program: TSESTree.Program): LocalExport[] => {
   }
 
   return exports;
-}
+};
 
 const atomicComponentRule: OxlintRuleModule<
   "invalidExport" | "missingComponentExport" | "multipleComponentDeclarations" | "nonJsxComponent"
@@ -388,7 +393,7 @@ const atomicComponentRule: OxlintRuleModule<
         const allowedExportNames = new Set([componentName, propsName]);
         const componentDeclarations = declarations.filter((item) => item.name === componentName);
         const componentExport = localExports.find(
-          (item) => item.kind === "value" && item.name === componentName,
+          (item) => item.kind === "value" && item.name === componentName
         );
 
         for (const localExport of localExports) {

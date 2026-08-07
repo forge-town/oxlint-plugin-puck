@@ -4,8 +4,9 @@
 
 import type { OxlintRuleContext, OxlintRuleModule, TSESLint, TSESTree } from "../../types.js";
 
-const getSourceCode = (context: OxlintRuleContext<"expected" | "unexpected">): TSESLint.SourceCode =>
-  context.getSourceCode ? context.getSourceCode() : context.sourceCode;
+const getSourceCode = (
+  context: OxlintRuleContext<"expected" | "unexpected">
+): TSESLint.SourceCode => (context.getSourceCode ? context.getSourceCode() : context.sourceCode);
 
 const newlineBeforeReturnRule: OxlintRuleModule<"expected" | "unexpected"> = {
   meta: {
@@ -91,7 +92,11 @@ const newlineBeforeReturnRule: OxlintRuleModule<"expected" | "unexpected"> = {
               const range: [number, number] = [prevToken.range[1], node.range[0]];
               const textBetween = sourceCode.getText().slice(range[0], range[1]);
               // Insert one extra newline while preserving trailing indentation
-              const newText = textBetween.replace(/(\r?\n)?([ \t]*)$/, (m: string, newline: string | undefined, indent: string | undefined) => (newline ? newline + newline + indent : "\n" + m));
+              const newText = textBetween.replace(
+                /(\r?\n)?([ \t]*)$/,
+                (m: string, newline: string | undefined, indent: string | undefined) =>
+                  newline ? newline + newline + indent : "\n" + m
+              );
 
               return fixer.replaceTextRange(range, newText);
             },

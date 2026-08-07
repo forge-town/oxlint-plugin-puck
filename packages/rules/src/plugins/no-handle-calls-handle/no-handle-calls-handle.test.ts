@@ -67,10 +67,7 @@ describe("no-handle-calls-handle", () => {
           }
         `,
         filename: "src/components/Button.tsx",
-        errors: [
-          { messageId: "noHandleCall" },
-          { messageId: "noHandleCall" },
-        ],
+        errors: [{ messageId: "noHandleCall" }, { messageId: "noHandleCall" }],
       },
     ],
   });

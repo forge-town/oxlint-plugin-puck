@@ -6,11 +6,7 @@ const rule = plugin.rules["no-explicit-unknown"];
 
 describe("no-explicit-unknown", () => {
   runRuleTests("no-explicit-unknown", rule, {
-    valid: [
-      "let x: string;",
-      "const y: User = getUser();",
-      "function f(a: number): void {}",
-    ],
+    valid: ["let x: string;", "const y: User = getUser();", "function f(a: number): void {}"],
     invalid: [
       {
         code: "let x: unknown;",

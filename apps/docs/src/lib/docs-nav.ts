@@ -1,3 +1,5 @@
+import { rules } from "./rules.ts";
+
 export type DocNavItem = {
   title: string;
   to: string;
@@ -10,26 +12,17 @@ export type DocNavSection = {
 
 export const docNav: DocNavSection[] = [
   {
-    title: "入门",
+    title: "开始",
     items: [
       { title: "介绍", to: "/docs" },
       { title: "快速开始", to: "/docs/getting-started" },
-      { title: "安装", to: "/docs/installation" },
     ],
   },
   {
-    title: "指南",
-    items: [
-      { title: "目录结构", to: "/docs/guides/structure" },
-      { title: "路由", to: "/docs/guides/routing" },
-      { title: "样式", to: "/docs/guides/styling" },
-    ],
-  },
-  {
-    title: "参考",
-    items: [
-      { title: "API", to: "/docs/reference/api" },
-      { title: "CLI", to: "/docs/reference/cli" },
-    ],
+    title: "规则",
+    items: rules.map((rule) => ({
+      title: rule.name,
+      to: `/docs/rules/${rule.id}`,
+    })),
   },
 ];

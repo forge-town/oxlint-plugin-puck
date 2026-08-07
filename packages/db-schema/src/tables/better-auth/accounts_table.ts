@@ -22,5 +22,5 @@ export const accountsTable = pgTable(
       .$onUpdate(() => new Date())
       .notNull(),
   },
-  (table) => [index("accounts_userId_idx").on(table.userId)],
+  (table) => [index("accounts_userId_idx").on(table.userId)]
 );

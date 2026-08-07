@@ -7,7 +7,11 @@ import type { OxlintRuleContext, OxlintRuleModule, TSESTree } from "../../types.
 type SourceCodeWithFilename = { filename?: string };
 
 const getFilename = (context: OxlintRuleContext): string =>
-  context.filename ?? context.physicalFilename ?? context.getFilename?.() ?? (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ?? "";
+  context.filename ??
+  context.physicalFilename ??
+  context.getFilename?.() ??
+  (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ??
+  "";
 
 const normalizePath = (filename: string): string => filename.replaceAll("\\", "/");
 
@@ -29,7 +33,13 @@ const isIgnoredFile = (filename: string): boolean => {
 };
 
 const unwrapExpression = (node: TSESTree.Node): TSESTree.Node => {
-  if (node && (node.type === "ChainExpression" || node.type === "TSAsExpression" || node.type === "TSSatisfiesExpression" || node.type === "TSNonNullExpression")) {
+  if (
+    node &&
+    (node.type === "ChainExpression" ||
+      node.type === "TSAsExpression" ||
+      node.type === "TSSatisfiesExpression" ||
+      node.type === "TSNonNullExpression")
+  ) {
     return unwrapExpression(node.expression);
   }
 
@@ -65,7 +75,8 @@ const noHandleCallsHandleRule: OxlintRuleModule<"noHandleCall"> = {
       description: "Disallow handle callbacks from calling other handle callbacks",
     },
     messages: {
-      noHandleCall: "Do not call '{{name}}' inside a handle function. Move the shared behavior into a non-handle helper.",
+      noHandleCall:
+        "Do not call '{{name}}' inside a handle function. Move the shared behavior into a non-handle helper.",
     },
     schema: [],
   },
@@ -79,7 +90,12 @@ const noHandleCallsHandleRule: OxlintRuleModule<"noHandleCall"> = {
     const functionNames = new WeakMap<TSESTree.Node, string>();
     const handleFunctionStack: boolean[] = [];
 
-    const enterFunction = (node: TSESTree.FunctionDeclaration | TSESTree.FunctionExpression | TSESTree.ArrowFunctionExpression): void => {
+    const enterFunction = (
+      node:
+        | TSESTree.FunctionDeclaration
+        | TSESTree.FunctionExpression
+        | TSESTree.ArrowFunctionExpression
+    ): void => {
       const idName = node.type === "ArrowFunctionExpression" ? undefined : node.id?.name;
       const functionName = idName ?? functionNames.get(node) ?? "";
       handleFunctionStack.push(isHandleName(functionName));
@@ -91,7 +107,11 @@ const noHandleCallsHandleRule: OxlintRuleModule<"noHandleCall"> = {
 
     return {
       VariableDeclarator(node) {
-        if (node.id.type === "Identifier" && (node.init?.type === "ArrowFunctionExpression" || node.init?.type === "FunctionExpression")) {
+        if (
+          node.id.type === "Identifier" &&
+          (node.init?.type === "ArrowFunctionExpression" ||
+            node.init?.type === "FunctionExpression")
+        ) {
           functionNames.set(node.init, node.id.name);
         }
       },

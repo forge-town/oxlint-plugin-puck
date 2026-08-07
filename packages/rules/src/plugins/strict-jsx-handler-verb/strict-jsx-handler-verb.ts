@@ -7,7 +7,11 @@ import type { OxlintRuleContext, OxlintRuleModule, TSESTree } from "../../types.
 type SourceCodeWithFilename = { filename?: string };
 
 const getFilename = (context: OxlintRuleContext): string =>
-  context.filename ?? context.physicalFilename ?? context.getFilename?.() ?? (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ?? "";
+  context.filename ??
+  context.physicalFilename ??
+  context.getFilename?.() ??
+  (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ??
+  "";
 
 const normalizePath = (filename: string): string => filename.replaceAll("\\", "/");
 
@@ -16,11 +20,22 @@ const isTsxFile = (filename: string): boolean => normalizePath(filename).endsWit
 const isIgnoredFile = (filename: string): boolean => {
   const normalized = normalizePath(filename);
 
-  return normalized.includes("/__spec__/") || normalized.includes("/__tests__/") || normalized.includes("/e2e/") || normalized.includes("/routes/api/");
+  return (
+    normalized.includes("/__spec__/") ||
+    normalized.includes("/__tests__/") ||
+    normalized.includes("/e2e/") ||
+    normalized.includes("/routes/api/")
+  );
 };
 
 const unwrapExpression = (node: TSESTree.Node): TSESTree.Node => {
-  if (node && (node.type === "ChainExpression" || node.type === "TSAsExpression" || node.type === "TSSatisfiesExpression" || node.type === "TSNonNullExpression")) {
+  if (
+    node &&
+    (node.type === "ChainExpression" ||
+      node.type === "TSAsExpression" ||
+      node.type === "TSSatisfiesExpression" ||
+      node.type === "TSNonNullExpression")
+  ) {
     return unwrapExpression(node.expression);
   }
 
@@ -114,7 +129,8 @@ const strictJsxHandlerVerbRule: OxlintRuleModule<"mismatchedVerb"> = {
       description: "Require JSX handle names to end with the exact event prop verb",
     },
     messages: {
-      mismatchedVerb: "'{{handlerName}}' passed to '{{propName}}' must end with '{{expectedSuffix}}'. Rename it to end with the exact event verb.",
+      mismatchedVerb:
+        "'{{handlerName}}' passed to '{{propName}}' must end with '{{expectedSuffix}}'. Rename it to end with the exact event verb.",
     },
     schema: [],
   },

@@ -8,18 +8,18 @@ describe("jsx-sort-props", () => {
   runRuleTests("jsx-sort-props", rule, {
     valid: [
       {
-        code: "const el = <Button className=\"a\" id=\"b\" onClick={() => {}} />;",
+        code: 'const el = <Button className="a" id="b" onClick={() => {}} />;',
       },
       {
-        code: "const el = <Button className=\"a\" id=\"b\" />;",
+        code: 'const el = <Button className="a" id="b" />;',
         options: [{ callbacksLast: true }],
       },
       {
-        code: "const el = <Button key=\"a\" id=\"b\" />;",
+        code: 'const el = <Button key="a" id="b" />;',
         options: [{ reservedFirst: ["key"] }],
       },
       {
-        code: "const el = <Button key=\"a\" className=\"b\" />;",
+        code: 'const el = <Button key="a" className="b" />;',
         options: [{ reservedFirst: ["key"] }],
       },
       {
@@ -31,37 +31,37 @@ describe("jsx-sort-props", () => {
         options: [{ shorthandFirst: true }],
       },
       {
-        code: "const el = <Button\n  first={\n    long\n  }\n  second=\"2\"\n/>;",
+        code: 'const el = <Button\n  first={\n    long\n  }\n  second="2"\n/>;',
         options: [{ multiline: "first" }],
       },
       {
-        code: "const el = <Button second=\"2\"\n  first={\n    long\n  }\n/>;",
+        code: 'const el = <Button second="2"\n  first={\n    long\n  }\n/>;',
         options: [{ multiline: "last" }],
       },
     ],
     invalid: [
       {
-        code: "const el = <Button b=\"1\" a=\"2\" />;",
+        code: 'const el = <Button b="1" a="2" />;',
         errors: [{ messageId: "sortPropsByAlpha" }],
-        output: "const el = <Button a=\"2\" b=\"1\" />;",
+        output: 'const el = <Button a="2" b="1" />;',
       },
       {
-        code: "const el = <Button onClick={() => {}} id=\"b\" />;",
+        code: 'const el = <Button onClick={() => {}} id="b" />;',
         options: [{ callbacksLast: true }],
         errors: [{ messageId: "listCallbacksLast" }],
-        output: "const el = <Button id=\"b\" onClick={() => {}} />;",
+        output: 'const el = <Button id="b" onClick={() => {}} />;',
       },
       {
-        code: "const el = <Button id=\"b\" key=\"a\" />;",
+        code: 'const el = <Button id="b" key="a" />;',
         options: [{ reservedFirst: ["key", "ref"] }],
         errors: [{ messageId: "listReservedPropsFirst" }],
-        output: "const el = <Button key=\"a\" id=\"b\" />;",
+        output: 'const el = <Button key="a" id="b" />;',
       },
       {
-        code: "const el = <Button b=\"1\" a=\"2\" />;",
+        code: 'const el = <Button b="1" a="2" />;',
         options: [{ ignoreCase: true }],
         errors: [{ messageId: "sortPropsByAlpha" }],
-        output: "const el = <Button a=\"2\" b=\"1\" />;",
+        output: 'const el = <Button a="2" b="1" />;',
       },
       {
         code: "const el = <Button onMouseDown={() => {}} onClick={() => {}} />;",
@@ -82,27 +82,21 @@ describe("jsx-sort-props", () => {
         output: "const el = <Button b a={1} />;",
       },
       {
-        code: "const el = <Button\n  onClick={() => {}}\n  className=\"a\"\n/>;",
+        code: 'const el = <Button\n  onClick={() => {}}\n  className="a"\n/>;',
         options: [{ callbacksLast: true }],
         errors: [{ messageId: "listCallbacksLast" }],
-        output: "const el = <Button\n  className=\"a\"\n  onClick={() => {}}\n/>;",
+        output: 'const el = <Button\n  className="a"\n  onClick={() => {}}\n/>;',
       },
       {
-        code: "const el = <Button a=\"1\" b=\"2\" />;",
+        code: 'const el = <Button a="1" b="2" />;',
         options: [{ reservedFirst: [] }],
-        errors: [
-          { messageId: "listIsEmpty" },
-          { messageId: "listIsEmpty" },
-        ],
+        errors: [{ messageId: "listIsEmpty" }, { messageId: "listIsEmpty" }],
         output: null,
       },
       {
-        code: "const el = <Button a=\"1\" b=\"2\" />;",
+        code: 'const el = <Button a="1" b="2" />;',
         options: [{ reservedFirst: ["notReserved", "key"] }],
-        errors: [
-          { messageId: "noUnreservedProps" },
-          { messageId: "noUnreservedProps" },
-        ],
+        errors: [{ messageId: "noUnreservedProps" }, { messageId: "noUnreservedProps" }],
         output: null,
       },
     ],

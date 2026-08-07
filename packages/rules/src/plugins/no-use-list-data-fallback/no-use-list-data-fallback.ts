@@ -4,8 +4,16 @@
 
 import type { OxlintRuleModule, TSESTree } from "../../types.js";
 
-const unwrapExpression = (node: TSESTree.Node | null | undefined): TSESTree.Node | null | undefined => {
-  if (node && (node.type === "ChainExpression" || node.type === "TSAsExpression" || node.type === "TSSatisfiesExpression" || node.type === "TSNonNullExpression")) {
+const unwrapExpression = (
+  node: TSESTree.Node | null | undefined
+): TSESTree.Node | null | undefined => {
+  if (
+    node &&
+    (node.type === "ChainExpression" ||
+      node.type === "TSAsExpression" ||
+      node.type === "TSSatisfiesExpression" ||
+      node.type === "TSNonNullExpression")
+  ) {
     return unwrapExpression(node.expression);
   }
 
@@ -15,7 +23,11 @@ const unwrapExpression = (node: TSESTree.Node | null | undefined): TSESTree.Node
 const isUseListCall = (node: TSESTree.Node | null | undefined): boolean => {
   const expression = unwrapExpression(node);
 
-  return expression?.type === "CallExpression" && expression.callee.type === "Identifier" && expression.callee.name === "useList";
+  return (
+    expression?.type === "CallExpression" &&
+    expression.callee.type === "Identifier" &&
+    expression.callee.name === "useList"
+  );
 };
 
 const getPropertyName = (node: TSESTree.Node | null | undefined): string | undefined => {
@@ -57,7 +69,7 @@ const isEmptyArrayExpression = (node: TSESTree.Node | null | undefined): boolean
 const getUseListResultDataReplacement = (
   node: TSESTree.Node | null | undefined,
   resultIdentifiers: Set<string>,
-  returnIdentifiers: Set<string>,
+  returnIdentifiers: Set<string>
 ): string | undefined => {
   const expression = unwrapExpression(node);
 
@@ -90,10 +102,12 @@ const noUseListDataFallbackRule: OxlintRuleModule<"noFallback"> = {
   meta: {
     type: "problem",
     docs: {
-      description: "Disallow `?? []` fallbacks for Refine useList result.data because it is always an array",
+      description:
+        "Disallow `?? []` fallbacks for Refine useList result.data because it is always an array",
     },
     messages: {
-      noFallback: "useList result.data is always an array. Use result.data directly instead of optional chaining or `?? []`.",
+      noFallback:
+        "useList result.data is always an array. Use result.data directly instead of optional chaining or `?? []`.",
     },
     schema: [],
     fixable: "code",
@@ -140,7 +154,11 @@ const noUseListDataFallbackRule: OxlintRuleModule<"noFallback"> = {
           return;
         }
 
-        const replacement = getUseListResultDataReplacement(node.left, resultIdentifiers, returnIdentifiers);
+        const replacement = getUseListResultDataReplacement(
+          node.left,
+          resultIdentifiers,
+          returnIdentifiers
+        );
 
         if (!replacement) {
           return;

@@ -1,13 +1,16 @@
 import { Outlet, HeadContent, Scripts } from "@tanstack/react-router";
+import { Surface } from "@/components/Surface";
 
 export const RootDocument = () => {
   return (
-    <html lang="zh-CN">
+    <html className="dark" lang="zh-CN">
       <head>
         <HeadContent />
       </head>
       <body>
-        <Outlet />
+        <Surface>
+          <Outlet />
+        </Surface>
         <Scripts />
       </body>
     </html>

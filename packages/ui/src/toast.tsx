@@ -50,7 +50,7 @@ export const Toast = ({
         "fixed right-4 z-50 flex items-start gap-3 rounded-lg border p-4 shadow-lg transition-all duration-200 max-w-md",
         type === "success" && "bg-green-50 border-green-200 text-green-800",
         type === "error" && "bg-red-50 border-red-200 text-red-800",
-        isVisible ? "translate-x-0 opacity-100" : "translate-x-full opacity-0",
+        isVisible ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
       )}
     >
       <div className="shrink-0">
@@ -63,16 +63,9 @@ export const Toast = ({
 
       <div className="flex-1 min-w-0">
         <div className="font-medium text-sm">{title}</div>
-        {description && (
-          <div className="text-sm opacity-90 mt-1">{description}</div>
-        )}
+        {description && <div className="text-sm opacity-90 mt-1">{description}</div>}
         {action && (
-          <Button
-            variant="outline"
-            size="sm"
-            className="mt-2 h-7 text-xs"
-            onClick={action.onClick}
-          >
+          <Button variant="outline" size="sm" className="mt-2 h-7 text-xs" onClick={action.onClick}>
             {action.label}
           </Button>
         )}

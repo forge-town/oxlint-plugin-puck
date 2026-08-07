@@ -7,20 +7,34 @@ import type { OxlintRuleContext, OxlintRuleModule } from "../../types.js";
 type SourceCodeWithFilename = { filename?: string };
 
 const getFilename = (context: OxlintRuleContext): string => {
-  return context.filename ?? context.physicalFilename ?? context.getFilename?.() ?? (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ?? "";
+  return (
+    context.filename ??
+    context.physicalFilename ??
+    context.getFilename?.() ??
+    (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ??
+    ""
+  );
 };
 
 const isProcessEnvMember = (node: {
   object?: { type?: string; name?: string };
   property?: { type?: string; name?: string };
 }): boolean => {
-  return node.object?.type === "Identifier" && node.object.name === "process" && node.property?.type === "Identifier" && node.property.name === "env";
+  return (
+    node.object?.type === "Identifier" &&
+    node.object.name === "process" &&
+    node.property?.type === "Identifier" &&
+    node.property.name === "env"
+  );
 };
 
 const isAllowedIntegrationFile = (filename: string): boolean => {
   const normalized = filename.replaceAll("\\", "/");
 
-  return normalized.includes("/src/integrations/env/") || normalized.includes("/src/integrations/server-env/");
+  return (
+    normalized.includes("/src/integrations/env/") ||
+    normalized.includes("/src/integrations/server-env/")
+  );
 };
 
 const noProcessEnvOutsideIntegrationRule: OxlintRuleModule<"noProcessEnv"> = {
@@ -30,7 +44,8 @@ const noProcessEnvOutsideIntegrationRule: OxlintRuleModule<"noProcessEnv"> = {
       description: "Disallow direct process.env usage outside env integration modules",
     },
     messages: {
-      noProcessEnv: "process.env must go through src/integrations/env or src/integrations/server-env instead of being read directly.",
+      noProcessEnv:
+        "process.env must go through src/integrations/env or src/integrations/server-env instead of being read directly.",
     },
     schema: [],
   },

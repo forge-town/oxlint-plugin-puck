@@ -22,7 +22,7 @@ describe("atomic-schema", () => {
         filename: "src/schemas/index.ts",
       },
       {
-        code: "export { UserSchema } from \"./User.schema\";",
+        code: 'export { UserSchema } from "./User.schema";',
         filename: "src/schemas/UsersSchemas.ts",
       },
       {
@@ -66,10 +66,7 @@ describe("atomic-schema", () => {
       {
         code: "const helper = () => 1; export { helper };",
         filename: "src/schemas/User.schema.ts",
-        errors: [
-          { messageId: "missingZodSchema" },
-          { messageId: "missingZodImport" },
-        ],
+        errors: [{ messageId: "missingZodSchema" }, { messageId: "missingZodImport" }],
       },
       {
         code: `

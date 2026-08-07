@@ -9,10 +9,12 @@ const noTryRule: OxlintRuleModule<"noTry"> = {
   meta: {
     type: "problem",
     docs: {
-      description: "Disallow `try` statements. Use neverthrow for functional error handling instead.",
+      description:
+        "Disallow `try` statements. Use neverthrow for functional error handling instead.",
     },
     messages: {
-      noTry: "Unexpected `try` statement. Use neverthrow (Result, ok, err) for functional error handling instead of try-catch.",
+      noTry:
+        "Unexpected `try` statement. Use neverthrow (Result, ok, err) for functional error handling instead of try-catch.",
     },
     schema: [],
   },

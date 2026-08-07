@@ -8,10 +8,10 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Docs" },
+      { title: "Puck Docs" },
       {
         name: "description",
-        content: "Technical Documentation Project",
+        content: "Custom Oxlint rules for monorepo frontend projects.",
       },
     ],
     links: [

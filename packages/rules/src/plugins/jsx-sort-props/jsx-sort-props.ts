@@ -86,8 +86,9 @@ type SortOptions = {
   locale: string;
 };
 
-const getSourceCode = (context: OxlintRuleContext<RuleMessageIds, [RuleOptions]>): TSESLint.SourceCode =>
-  context.getSourceCode ? context.getSourceCode() : context.sourceCode;
+const getSourceCode = (
+  context: OxlintRuleContext<RuleMessageIds, [RuleOptions]>
+): TSESLint.SourceCode => (context.getSourceCode ? context.getSourceCode() : context.sourceCode);
 
 // --- Rule implementation ---
 
@@ -95,7 +96,8 @@ const isMultilineProp = (node: TSESTree.JSXAttribute): boolean =>
   node.loc.start.line !== node.loc.end.line;
 
 const messages: Record<RuleMessageIds, string> = {
-  noUnreservedProps: "A customized reserved first list must only contain a subset of React reserved props. Remove: {{unreservedWords}}",
+  noUnreservedProps:
+    "A customized reserved first list must only contain a subset of React reserved props. Remove: {{unreservedWords}}",
   listIsEmpty: "A customized reserved first list must not be empty",
   listReservedPropsFirst: "Reserved props must be listed before all other props",
   listCallbacksLast: "Callbacks must be listed after all other props",
@@ -124,7 +126,8 @@ const getSortFirstIndex = (name: string, sortFirstList: string[], ignoreCase: bo
 };
 
 // Module-level WeakMap reset per file via Program() visitor
-let attributeMap: WeakMap<TSESTree.JSXAttribute, { end: number; hasComment: boolean }> = new WeakMap();
+let attributeMap: WeakMap<TSESTree.JSXAttribute, { end: number; hasComment: boolean }> =
+  new WeakMap();
 
 const shouldSortToEnd = (node: TSESTree.JSXAttribute): boolean => {
   const attr = attributeMap.get(node);
@@ -132,7 +135,11 @@ const shouldSortToEnd = (node: TSESTree.JSXAttribute): boolean => {
   return !!attr && !!attr.hasComment;
 };
 
-const contextCompare = (a: TSESTree.JSXAttribute, b: TSESTree.JSXAttribute, options: SortOptions): number => {
+const contextCompare = (
+  a: TSESTree.JSXAttribute,
+  b: TSESTree.JSXAttribute,
+  options: SortOptions
+): number => {
   let aProp = propName(a);
   let bProp = propName(b);
 
@@ -227,11 +234,11 @@ const contextCompare = (a: TSESTree.JSXAttribute, b: TSESTree.JSXAttribute, opti
   }
 
   return aProp.localeCompare(bProp, actualLocale);
-}
+};
 
 const getGroupsOfSortableAttributes = (
   attributes: JsxAttributeType[],
-  context: OxlintRuleContext<RuleMessageIds, [RuleOptions]>,
+  context: OxlintRuleContext<RuleMessageIds, [RuleOptions]>
 ): TSESTree.JSXAttribute[][] => {
   const sourceCode = getSourceCode(context);
   const sortableAttributeGroups: TSESTree.JSXAttribute[][] = [];
@@ -297,13 +304,20 @@ const getGroupsOfSortableAttributes = (
             }
             addtoSortableAttributeGroups(jsxAttribute);
           }
-        } else if (comment.length > 1 && attributeline + 1 === comment[1]!.loc.start.line && nextAttribute) {
+        } else if (
+          comment.length > 1 &&
+          attributeline + 1 === comment[1]!.loc.start.line &&
+          nextAttribute
+        ) {
           const commentNextAttribute = sourceCode.getCommentsAfter(nextAttribute);
           attributeMap.set(jsxAttribute, {
             end: nextAttribute.range[1],
             hasComment: true,
           });
-          if (commentNextAttribute.length === 1 && nextAttribute.loc.start.line === commentNextAttribute[0]!.loc.start.line) {
+          if (
+            commentNextAttribute.length === 1 &&
+            nextAttribute.loc.start.line === commentNextAttribute[0]!.loc.start.line
+          ) {
             attributeMap.set(jsxAttribute, {
               end: commentNextAttribute[0]!.range[1],
               hasComment: true,
@@ -317,12 +331,12 @@ const getGroupsOfSortableAttributes = (
   }
 
   return sortableAttributeGroups;
-}
+};
 
 const generateFixerFunction = (
   node: TSESTree.JSXOpeningElement,
   context: OxlintRuleContext<RuleMessageIds, [RuleOptions]>,
-  reservedList: string[],
+  reservedList: string[]
 ): TSESLint.ReportFixFunction => {
   const attributes = [...node.attributes];
   const configuration = (context.options[0] || {}) as RuleOptions;
@@ -350,7 +364,9 @@ const generateFixerFunction = (
   };
 
   const sortableAttributeGroups = getGroupsOfSortableAttributes(attributes, context);
-  const sortedAttributeGroups = [...sortableAttributeGroups].map((group) => [...group].sort((a, b) => contextCompare(a, b, options)));
+  const sortedAttributeGroups = [...sortableAttributeGroups].map((group) =>
+    [...group].sort((a, b) => contextCompare(a, b, options))
+  );
 
   return function fixFunction(fixer: TSESLint.RuleFixer): TSESLint.RuleFix | null {
     const fixers: Array<{ range: [number, number]; text: string }> = [];
@@ -381,14 +397,16 @@ const generateFixerFunction = (
 
     return fixer.replaceTextRange([rangeStart, rangeEnd], source.slice(rangeStart, rangeEnd));
   };
-}
+};
 
 const validateReservedFirstConfig = (
   context: OxlintRuleContext<RuleMessageIds, [RuleOptions]>,
-  reservedFirst: string[] | boolean | undefined,
+  reservedFirst: string[] | boolean | undefined
 ): ((decl: TSESTree.JSXAttribute) => void) | undefined => {
   if (reservedFirst && Array.isArray(reservedFirst)) {
-    const nonReservedWords = reservedFirst.filter((word) => !isReservedPropName(word, RESERVED_PROPS_LIST));
+    const nonReservedWords = reservedFirst.filter(
+      (word) => !isReservedPropName(word, RESERVED_PROPS_LIST)
+    );
     if (reservedFirst.length === 0) {
       return function Report(decl: TSESTree.JSXAttribute) {
         context.report({ node: decl, messageId: "listIsEmpty" });
@@ -406,7 +424,7 @@ const validateReservedFirstConfig = (
   }
 
   return undefined;
-}
+};
 
 const reportedNodeAttributes = new WeakMap<TSESTree.JSXAttribute, RuleMessageIds[]>();
 
@@ -415,7 +433,7 @@ const reportNodeAttribute = (
   errorType: RuleMessageIds,
   node: TSESTree.JSXOpeningElement,
   context: OxlintRuleContext<RuleMessageIds, [RuleOptions]>,
-  reservedList: string[],
+  reservedList: string[]
 ): void => {
   const errors = reportedNodeAttributes.get(nodeAttribute) || [];
   if (errors.includes(errorType)) {
@@ -429,7 +447,7 @@ const reportNodeAttribute = (
     messageId: errorType,
     fix: generateFixerFunction(node, context, reservedList),
   });
-}
+};
 
 const jsxSortPropsRule: OxlintRuleModule<RuleMessageIds, [RuleOptions]> = {
   meta: {
@@ -483,7 +501,10 @@ const jsxSortPropsRule: OxlintRuleModule<RuleMessageIds, [RuleOptions]> = {
 
       JSXOpeningElement(node: TSESTree.JSXOpeningElement): void {
         // `dangerouslySetInnerHTML` is only "reserved" on DOM components
-        const nodeReservedList = reservedFirst && !isDOMComponent(node) ? reservedList.filter((prop) => prop !== "dangerouslySetInnerHTML") : reservedList;
+        const nodeReservedList =
+          reservedFirst && !isDOMComponent(node)
+            ? reservedList.filter((prop) => prop !== "dangerouslySetInnerHTML")
+            : reservedList;
 
         node.attributes.reduce<JsxAttributeType | undefined>((memo, decl, idx, attrs) => {
           if (decl.type === "JSXSpreadAttribute") {
@@ -503,12 +524,22 @@ const jsxSortPropsRule: OxlintRuleModule<RuleMessageIds, [RuleOptions]> = {
           const currentIsCallback = isCallbackPropName(currentPropName);
 
           if (sortFirst && sortFirst.length > 0) {
-            const previousSortFirstIndex = getSortFirstIndex(previousPropName, sortFirst, ignoreCase);
+            const previousSortFirstIndex = getSortFirstIndex(
+              previousPropName,
+              sortFirst,
+              ignoreCase
+            );
             const currentSortFirstIndex = getSortFirstIndex(currentPropName, sortFirst, ignoreCase);
 
             if (previousSortFirstIndex >= 0 && currentSortFirstIndex >= 0) {
               if (previousSortFirstIndex > currentSortFirstIndex) {
-                reportNodeAttribute(decl, "listSortFirstPropsFirst", node, context, nodeReservedList);
+                reportNodeAttribute(
+                  decl,
+                  "listSortFirstPropsFirst",
+                  node,
+                  context,
+                  nodeReservedList
+                );
 
                 return memo;
               }
@@ -610,7 +641,12 @@ const jsxSortPropsRule: OxlintRuleModule<RuleMessageIds, [RuleOptions]> = {
 
           if (
             !noSortAlphabetically &&
-            (ignoreCase || locale !== "auto" ? previousPropName.localeCompare(currentPropName, locale === "auto" ? undefined : locale) > 0 : previousPropName > currentPropName)
+            (ignoreCase || locale !== "auto"
+              ? previousPropName.localeCompare(
+                  currentPropName,
+                  locale === "auto" ? undefined : locale
+                ) > 0
+              : previousPropName > currentPropName)
           ) {
             reportNodeAttribute(decl, "sortPropsByAlpha", node, context, nodeReservedList);
 

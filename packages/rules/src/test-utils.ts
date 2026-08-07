@@ -25,7 +25,7 @@ export const runRuleTests = <
   tests: {
     valid: Array<string | ValidTestCase>;
     invalid: Array<InvalidTestCase>;
-  },
+  }
 ): void => {
   const ruleTester = new RuleTester({
     languageOptions: {
@@ -34,12 +34,8 @@ export const runRuleTests = <
     },
   });
 
-  ruleTester.run(
-    name,
-    rule as never,
-    {
-      valid: tests.valid as never,
-      invalid: tests.invalid as never,
-    },
-  );
+  ruleTester.run(name, rule as never, {
+    valid: tests.valid as never,
+    invalid: tests.invalid as never,
+  });
 };

@@ -77,6 +77,8 @@ test-results
 .github/instructions
 .github/prompts
 
+/docs/
+
 *.log
 output.log
 quality_output.log

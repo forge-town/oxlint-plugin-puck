@@ -31,7 +31,10 @@ const removeExtension = (filename: string): string => filename.replace(/\.[cm]?[
 const isDbSchemaFile = (filename: string): boolean => {
   const normalized = normalizePath(filename);
 
-  return normalized.includes("/packages/db/src/schema") || normalized.includes("/packages/db/src/schemas/");
+  return (
+    normalized.includes("/packages/db/src/schema") ||
+    normalized.includes("/packages/db/src/schemas/")
+  );
 };
 
 const isSchemaFile = (filename: string): boolean => {
@@ -41,13 +44,22 @@ const isSchemaFile = (filename: string): boolean => {
     return false;
   }
 
-  return normalized.includes("/packages/schemas/src/") || normalized.includes("/schemas/") || normalized.endsWith("/schema.ts") || normalized.endsWith("/schema.tsx");
+  return (
+    normalized.includes("/packages/schemas/src/") ||
+    normalized.includes("/schemas/") ||
+    normalized.endsWith("/schema.ts") ||
+    normalized.endsWith("/schema.tsx")
+  );
 };
 
 const isSchemasDirectoryFile = (filename: string): boolean => {
   const normalized = normalizePath(filename);
 
-  return !isDbSchemaFile(normalized) && !normalized.includes("/packages/schemas/src/") && normalized.includes("/schemas/");
+  return (
+    !isDbSchemaFile(normalized) &&
+    !normalized.includes("/packages/schemas/src/") &&
+    normalized.includes("/schemas/")
+  );
 };
 
 const isSchemaModuleFileName = (fileName: string): boolean =>
@@ -56,11 +68,11 @@ const isSchemaModuleFileName = (fileName: string): boolean =>
 const isAtomicSchemaFileName = (fileName: string): boolean =>
   /^[A-Z][A-Za-z0-9]*\.schema\.[cm]?[jt]sx?$/.test(fileName);
 
-const isIndexFileName = (fileName: string): boolean =>
-  /^index\.[cm]?[jt]sx?$/.test(fileName);
+const isIndexFileName = (fileName: string): boolean => /^index\.[cm]?[jt]sx?$/.test(fileName);
 
 const isExportOnlyStatement = (statement: TSESTree.Statement): boolean =>
-  statement.type === "ExportAllDeclaration" || (statement.type === "ExportNamedDeclaration" && Boolean(statement.source));
+  statement.type === "ExportAllDeclaration" ||
+  (statement.type === "ExportNamedDeclaration" && Boolean(statement.source));
 
 const getNonExportOnlyStatement = (program: TSESTree.Program): TSESTree.Statement | undefined => {
   return program.body.find((statement) => {
@@ -72,7 +84,9 @@ const getNonExportOnlyStatement = (program: TSESTree.Program): TSESTree.Statemen
   });
 };
 
-const getDeclarationNames = (declaration: TSESTree.NamedExportDeclarations | null | undefined): string[] => {
+const getDeclarationNames = (
+  declaration: TSESTree.NamedExportDeclarations | null | undefined
+): string[] => {
   if (!declaration) {
     return [];
   }
@@ -109,8 +123,13 @@ const getExportSpecifierName = (specifier: TSESTree.ExportSpecifier): string | n
   return null;
 };
 
-const getDeclarationKind = (declaration: TSESTree.NamedExportDeclarations | null | undefined): "type" | "value" => {
-  if (declaration?.type === "TSTypeAliasDeclaration" || declaration?.type === "TSInterfaceDeclaration") {
+const getDeclarationKind = (
+  declaration: TSESTree.NamedExportDeclarations | null | undefined
+): "type" | "value" => {
+  if (
+    declaration?.type === "TSTypeAliasDeclaration" ||
+    declaration?.type === "TSInterfaceDeclaration"
+  ) {
     return "type";
   }
 
@@ -166,7 +185,8 @@ const getLocalExports = (program: TSESTree.Program): LocalExport[] => {
 const getLocalValueExports = (localExports: LocalExport[]): LocalExport[] =>
   localExports.filter((item) => item.kind === "value");
 
-const isZodImportSource = (value: string | undefined): boolean => value === "zod" || value === "zod/v4";
+const isZodImportSource = (value: string | undefined): boolean =>
+  value === "zod" || value === "zod/v4";
 
 const getZodImportNames = (program: TSESTree.Program): Set<string> => {
   const names = new Set<string>();
@@ -190,18 +210,26 @@ const getZodImportNames = (program: TSESTree.Program): Set<string> => {
   return names;
 };
 
-const getVariableInitializers = (program: TSESTree.Program, names: Set<string>): TSESTree.Expression[] => {
+const getVariableInitializers = (
+  program: TSESTree.Program,
+  names: Set<string>
+): TSESTree.Expression[] => {
   const initializers: TSESTree.Expression[] = [];
 
   for (const statement of program.body) {
-    const declaration = statement.type === "ExportNamedDeclaration" ? statement.declaration : statement;
+    const declaration =
+      statement.type === "ExportNamedDeclaration" ? statement.declaration : statement;
 
     if (declaration?.type !== "VariableDeclaration") {
       continue;
     }
 
     for (const declarator of declaration.declarations ?? []) {
-      if (declarator.id?.type === "Identifier" && names.has(declarator.id.name) && declarator.init) {
+      if (
+        declarator.id?.type === "Identifier" &&
+        names.has(declarator.id.name) &&
+        declarator.init
+      ) {
         initializers.push(declarator.init);
       }
     }
@@ -210,7 +238,11 @@ const getVariableInitializers = (program: TSESTree.Program, names: Set<string>):
   return initializers;
 };
 
-const nodeReferencesAnyName = (node: unknown, names: Set<string>, seen = new WeakSet<object>()): boolean => {
+const nodeReferencesAnyName = (
+  node: unknown,
+  names: Set<string>,
+  seen = new WeakSet<object>()
+): boolean => {
   if (!node || typeof node !== "object") {
     return false;
   }
@@ -221,7 +253,10 @@ const nodeReferencesAnyName = (node: unknown, names: Set<string>, seen = new Wea
 
   seen.add(node);
 
-  if ((node as TSESTree.Node).type === "Identifier" && names.has((node as TSESTree.Identifier).name)) {
+  if (
+    (node as TSESTree.Node).type === "Identifier" &&
+    names.has((node as TSESTree.Identifier).name)
+  ) {
     return true;
   }
 
@@ -246,7 +281,10 @@ const nodeReferencesAnyName = (node: unknown, names: Set<string>, seen = new Wea
   return false;
 };
 
-const hasZodSchemaDefinition = (program: TSESTree.Program, schemaValueExports: LocalExport[]): boolean => {
+const hasZodSchemaDefinition = (
+  program: TSESTree.Program,
+  schemaValueExports: LocalExport[]
+): boolean => {
   const zodImportNames = getZodImportNames(program);
 
   if (zodImportNames.size === 0) {
@@ -296,7 +334,9 @@ const getPrimaryExportNames = (localExports: LocalExport[]): string[] => {
       continue;
     }
 
-    const isCompanionType = valueExportNames.some((valueName) => isCompanionTypeName(item.name, valueName));
+    const isCompanionType = valueExportNames.some((valueName) =>
+      isCompanionTypeName(item.name, valueName)
+    );
 
     if (!isCompanionType) {
       primaryNames.add(item.name);
@@ -304,7 +344,7 @@ const getPrimaryExportNames = (localExports: LocalExport[]): string[] => {
   }
 
   return [...primaryNames];
-}
+};
 
 const atomicSchemaRule: OxlintRuleModule<
   | "indexHasLocalExports"
@@ -321,12 +361,17 @@ const atomicSchemaRule: OxlintRuleModule<
       description: "Require schema concepts to live in atomic schema modules",
     },
     messages: {
-      indexHasLocalExports: "Schema index files must only re-export atomic schema modules; move local declarations into their own file.",
-      schemaFileName: "Do not declare schema concepts in a generic schema.ts file; move each concept into schemas/<ConceptName>.schema.ts.",
-      invalidSchemaFileName: "Files inside schemas/ must be named Xxx.schema.ts, index.ts, or XxxSchemas.ts.",
+      indexHasLocalExports:
+        "Schema index files must only re-export atomic schema modules; move local declarations into their own file.",
+      schemaFileName:
+        "Do not declare schema concepts in a generic schema.ts file; move each concept into schemas/<ConceptName>.schema.ts.",
+      invalidSchemaFileName:
+        "Files inside schemas/ must be named Xxx.schema.ts, index.ts, or XxxSchemas.ts.",
       moduleHasLocalDeclarations: "Schema module files must only re-export atomic schema files.",
-      mismatchedExport: "Schema module '{{fileName}}' must be atomic; move '{{exportName}}' into its own schema module.",
-      missingZodSchema: "Atomic schema files must export exactly one zod schema value named XxxSchema.",
+      mismatchedExport:
+        "Schema module '{{fileName}}' must be atomic; move '{{exportName}}' into its own schema module.",
+      missingZodSchema:
+        "Atomic schema files must export exactly one zod schema value named XxxSchema.",
       missingZodImport: "Atomic schema files must define the exported XxxSchema value with zod.",
     },
     schema: [],
@@ -405,7 +450,9 @@ const atomicSchemaRule: OxlintRuleModule<
         }
 
         if (isSchemasFile && isAtomicSchemaFileName(fileName)) {
-          const schemaValueExports = localValueExports.filter((item) => item.name.endsWith("Schema"));
+          const schemaValueExports = localValueExports.filter((item) =>
+            item.name.endsWith("Schema")
+          );
 
           if (schemaValueExports.length !== 1) {
             context.report({

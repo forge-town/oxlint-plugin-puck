@@ -9,7 +9,9 @@ const disallowedEffectAliases = new Set(["runClientLayout"]);
 const effectHookNamePattern = /^use[A-Za-z0-9]*Effect$/u;
 
 const isDisallowedEffectHookName = (name: string): boolean =>
-  disallowedEffectHooks.has(name) || disallowedEffectAliases.has(name) || effectHookNamePattern.test(name);
+  disallowedEffectHooks.has(name) ||
+  disallowedEffectAliases.has(name) ||
+  effectHookNamePattern.test(name);
 
 const noUseEffectRule: OxlintRuleModule<"noUseEffect"> = {
   meta: {
@@ -18,7 +20,8 @@ const noUseEffectRule: OxlintRuleModule<"noUseEffect"> = {
       description: "Disallow useEffect and useLayoutEffect usage",
     },
     messages: {
-      noUseEffect: "Do not use React effect hooks. Move the behavior to store actions, event handlers, route loaders, or explicit subscriptions.",
+      noUseEffect:
+        "Do not use React effect hooks. Move the behavior to store actions, event handlers, route loaders, or explicit subscriptions.",
     },
     schema: [],
   },

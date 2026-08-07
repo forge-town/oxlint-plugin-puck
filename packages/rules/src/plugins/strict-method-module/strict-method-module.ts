@@ -104,13 +104,17 @@ type RuntimeValueLike = {
   node: TSESTree.Identifier;
 };
 
-const collectVariableFunctionNames = (node: TSESTree.Node | null | undefined): NamedFunctionLike[] => {
+const collectVariableFunctionNames = (
+  node: TSESTree.Node | null | undefined
+): NamedFunctionLike[] => {
   if (node?.type !== "VariableDeclaration") {
     return [];
   }
 
   return node.declarations
-    .filter((declarator) => declarator.id?.type === "Identifier" && isFunctionLikeNode(declarator.init))
+    .filter(
+      (declarator) => declarator.id?.type === "Identifier" && isFunctionLikeNode(declarator.init)
+    )
     .map((declarator) => ({
       name: (declarator.id as TSESTree.Identifier).name,
       node: declarator.id as TSESTree.Identifier,
@@ -166,7 +170,8 @@ const strictMethodModuleRule: OxlintRuleModule<
   meta: {
     type: "problem",
     docs: {
-      description: "Require method/helper modules to export one verb+noun method matching the file name",
+      description:
+        "Require method/helper modules to export one verb+noun method matching the file name",
     },
     messages: {
       extraRuntimeExport:
@@ -227,7 +232,11 @@ const strictMethodModuleRule: OxlintRuleModule<
             }
           }
 
-          if (statement.type === "FunctionDeclaration" && statement.id?.type === "Identifier" && !isMethodName(statement.id.name)) {
+          if (
+            statement.type === "FunctionDeclaration" &&
+            statement.id?.type === "Identifier" &&
+            !isMethodName(statement.id.name)
+          ) {
             context.report({
               data: {
                 methodName: statement.id.name,
@@ -239,9 +248,7 @@ const strictMethodModuleRule: OxlintRuleModule<
         }
 
         for (const exportSpecifier of exportSpecifiers) {
-          const topLevelFunction = topLevelFunctionNames.get(
-            exportSpecifier.localName,
-          );
+          const topLevelFunction = topLevelFunctionNames.get(exportSpecifier.localName);
 
           if (!topLevelFunction) {
             continue;

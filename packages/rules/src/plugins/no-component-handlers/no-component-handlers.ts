@@ -40,8 +40,16 @@ const isIgnoredFile = (filename: string): boolean => {
 
 const isHandleName = (name: string): boolean => /^handle[A-Z0-9]/.test(name);
 
-const unwrapExpression = (node: TSESTree.Node | null | undefined): TSESTree.Node | null | undefined => {
-  if (node && (node.type === "ChainExpression" || node.type === "TSAsExpression" || node.type === "TSSatisfiesExpression" || node.type === "TSNonNullExpression")) {
+const unwrapExpression = (
+  node: TSESTree.Node | null | undefined
+): TSESTree.Node | null | undefined => {
+  if (
+    node &&
+    (node.type === "ChainExpression" ||
+      node.type === "TSAsExpression" ||
+      node.type === "TSSatisfiesExpression" ||
+      node.type === "TSNonNullExpression")
+  ) {
     return unwrapExpression(node.expression);
   }
 
@@ -90,7 +98,10 @@ const isStoreHookCall = (node: TSESTree.Node | null | undefined): boolean => {
   return storeArgument?.type === "Identifier" && /(?:store|Store)$/.test(storeArgument.name);
 };
 
-const isUseStoreSelectorCall = (node: TSESTree.Node | null | undefined, handleName: string): boolean => {
+const isUseStoreSelectorCall = (
+  node: TSESTree.Node | null | undefined,
+  handleName: string
+): boolean => {
   const expression = unwrapExpression(node);
 
   if (expression?.type !== "CallExpression" || !isStoreHookCall(expression)) {
@@ -98,10 +109,14 @@ const isUseStoreSelectorCall = (node: TSESTree.Node | null | undefined, handleNa
   }
 
   const calleeName = getCalleeName(expression.callee);
-  const selector = calleeName === "useStore" ? expression.arguments?.[1] : expression.arguments?.[0];
+  const selector =
+    calleeName === "useStore" ? expression.arguments?.[1] : expression.arguments?.[0];
   const selectorExpression = unwrapExpression(selector);
 
-  if (selectorExpression?.type !== "ArrowFunctionExpression" && selectorExpression?.type !== "FunctionExpression") {
+  if (
+    selectorExpression?.type !== "ArrowFunctionExpression" &&
+    selectorExpression?.type !== "FunctionExpression"
+  ) {
     return false;
   }
 
@@ -115,7 +130,9 @@ const isUseStoreSelectorCall = (node: TSESTree.Node | null | undefined, handleNa
     return true;
   }
 
-  const selectedHandleName = getPropertyName((body as { property?: TSESTree.Node } | null)?.property);
+  const selectedHandleName = getPropertyName(
+    (body as { property?: TSESTree.Node } | null)?.property
+  );
 
   return isHandleName(selectedHandleName);
 };
@@ -136,15 +153,20 @@ const getPropertyName = (node: TSESTree.Node | null | undefined): string => {
   return "";
 };
 
-const isMemberExpressionForHandle = (node: TSESTree.Node | null | undefined, handleName: string): boolean => {
+const isMemberExpressionForHandle = (
+  node: TSESTree.Node | null | undefined,
+  handleName: string
+): boolean => {
   const expression = unwrapExpression(node);
 
-  return expression?.type === "MemberExpression" && getPropertyName(expression.property) === handleName;
+  return (
+    expression?.type === "MemberExpression" && getPropertyName(expression.property) === handleName
+  );
 };
 
 const isAllowedStoreObjectPattern = (
   id: TSESTree.Identifier | TSESTree.BindingPattern,
-  init: TSESTree.Expression | null | undefined,
+  init: TSESTree.Expression | null | undefined
 ): boolean => {
   if (id.type !== "ObjectPattern") {
     return false;
@@ -155,7 +177,7 @@ const isAllowedStoreObjectPattern = (
 
 const isAllowedStoreIdentifier = (
   id: TSESTree.Identifier | TSESTree.BindingPattern,
-  init: TSESTree.Expression | null | undefined,
+  init: TSESTree.Expression | null | undefined
 ): boolean => {
   if (id.type !== "Identifier") {
     return false;
@@ -178,7 +200,11 @@ const getBoundIdentifierName = (node: TSESTree.Node | null | undefined): string 
   return "";
 };
 
-const reportIdentifier = (context: OxlintRuleContext<"componentHandler">, node: TSESTree.Node, name: string): void => {
+const reportIdentifier = (
+  context: OxlintRuleContext<"componentHandler">,
+  node: TSESTree.Node,
+  name: string
+): void => {
   if (!isHandleName(name)) {
     return;
   }
@@ -192,18 +218,19 @@ const reportIdentifier = (context: OxlintRuleContext<"componentHandler">, node: 
   });
 };
 
-const isFunctionExpression = (node: TSESTree.Node | null | undefined): node is
-  | TSESTree.ArrowFunctionExpression
-  | TSESTree.FunctionExpression => {
+const isFunctionExpression = (
+  node: TSESTree.Node | null | undefined
+): node is TSESTree.ArrowFunctionExpression | TSESTree.FunctionExpression => {
   const expression = unwrapExpression(node);
 
-  return expression?.type === "ArrowFunctionExpression" || expression?.type === "FunctionExpression";
+  return (
+    expression?.type === "ArrowFunctionExpression" || expression?.type === "FunctionExpression"
+  );
 };
 
-const getFunctionExpression = (node: TSESTree.Node | null | undefined):
-  | TSESTree.ArrowFunctionExpression
-  | TSESTree.FunctionExpression
-  | null => {
+const getFunctionExpression = (
+  node: TSESTree.Node | null | undefined
+): TSESTree.ArrowFunctionExpression | TSESTree.FunctionExpression | null => {
   const expression = unwrapExpression(node);
 
   if (isFunctionExpression(expression)) {
@@ -244,7 +271,11 @@ const getHandleFunctionName = (node: TSESTree.Node): string => {
     return node.id?.name ?? "";
   }
 
-  if (node.type === "VariableDeclarator" && node.id.type === "Identifier" && getFunctionExpression(node.init)) {
+  if (
+    node.type === "VariableDeclarator" &&
+    node.id.type === "Identifier" &&
+    getFunctionExpression(node.init)
+  ) {
     return node.id.name;
   }
 
@@ -258,7 +289,7 @@ const getHandleFunctionName = (node: TSESTree.Node): string => {
 const reportHandleReturnFunction = (
   context: OxlintRuleContext<"handleReturnFunction">,
   node: TSESTree.Node,
-  name: string,
+  name: string
 ): void => {
   context.report({
     node,
@@ -276,7 +307,7 @@ const checkFunctionReturnsFunction = (
     | TSESTree.ArrowFunctionExpression
     | TSESTree.FunctionExpression,
   reportNode: TSESTree.Node,
-  name: string,
+  name: string
 ): void => {
   if (!isHandleName(name)) {
     return;
@@ -305,10 +336,12 @@ const noComponentHandlersRule: OxlintRuleModule<"componentHandler"> = {
   meta: {
     type: "problem",
     docs: {
-      description: "Disallow component-local handle callbacks; handlers should be defined in stores",
+      description:
+        "Disallow component-local handle callbacks; handlers should be defined in stores",
     },
     messages: {
-      componentHandler: "Do not define '{{name}}' in a component. Define it in the page/component store and read it through useStore.",
+      componentHandler:
+        "Do not define '{{name}}' in a component. Define it in the page/component store and read it through useStore.",
     },
     schema: [],
   },
@@ -368,7 +401,8 @@ const noHandleReturnFunctionRule: OxlintRuleModule<"handleReturnFunction"> = {
       description: "Disallow handle callbacks from returning another function",
     },
     messages: {
-      handleReturnFunction: "Do not return a function from '{{name}}'. Pass arguments with .bind in JSX instead.",
+      handleReturnFunction:
+        "Do not return a function from '{{name}}'. Pass arguments with .bind in JSX instead.",
     },
     schema: [],
   },

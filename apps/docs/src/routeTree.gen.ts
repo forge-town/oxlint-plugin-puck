@@ -13,12 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as DocsIndexRouteImport } from './routes/docs/index'
 import { Route as DocsGettingStartedRouteImport } from './routes/docs/getting-started'
-import { Route as DocsInstallationRouteImport } from './routes/docs/installation'
-import { Route as DocsGuidesRoutingRouteImport } from './routes/docs/guides/routing'
-import { Route as DocsGuidesStructureRouteImport } from './routes/docs/guides/structure'
-import { Route as DocsGuidesStylingRouteImport } from './routes/docs/guides/styling'
-import { Route as DocsReferenceApiRouteImport } from './routes/docs/reference/api'
-import { Route as DocsReferenceCliRouteImport } from './routes/docs/reference/cli'
+import { Route as DocsRulesRuleIdRouteImport } from './routes/docs/rules/$ruleId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,34 +35,9 @@ const DocsGettingStartedRoute = DocsGettingStartedRouteImport.update({
   path: '/getting-started',
   getParentRoute: () => DocsRoute,
 } as any)
-const DocsInstallationRoute = DocsInstallationRouteImport.update({
-  id: '/installation',
-  path: '/installation',
-  getParentRoute: () => DocsRoute,
-} as any)
-const DocsGuidesRoutingRoute = DocsGuidesRoutingRouteImport.update({
-  id: '/guides/routing',
-  path: '/guides/routing',
-  getParentRoute: () => DocsRoute,
-} as any)
-const DocsGuidesStructureRoute = DocsGuidesStructureRouteImport.update({
-  id: '/guides/structure',
-  path: '/guides/structure',
-  getParentRoute: () => DocsRoute,
-} as any)
-const DocsGuidesStylingRoute = DocsGuidesStylingRouteImport.update({
-  id: '/guides/styling',
-  path: '/guides/styling',
-  getParentRoute: () => DocsRoute,
-} as any)
-const DocsReferenceApiRoute = DocsReferenceApiRouteImport.update({
-  id: '/reference/api',
-  path: '/reference/api',
-  getParentRoute: () => DocsRoute,
-} as any)
-const DocsReferenceCliRoute = DocsReferenceCliRouteImport.update({
-  id: '/reference/cli',
-  path: '/reference/cli',
+const DocsRulesRuleIdRoute = DocsRulesRuleIdRouteImport.update({
+  id: '/rules/$ruleId',
+  path: '/rules/$ruleId',
   getParentRoute: () => DocsRoute,
 } as any)
 
@@ -75,74 +45,36 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/docs': typeof DocsRouteWithChildren
   '/docs/getting-started': typeof DocsGettingStartedRoute
-  '/docs/installation': typeof DocsInstallationRoute
   '/docs/': typeof DocsIndexRoute
-  '/docs/guides/routing': typeof DocsGuidesRoutingRoute
-  '/docs/guides/structure': typeof DocsGuidesStructureRoute
-  '/docs/guides/styling': typeof DocsGuidesStylingRoute
-  '/docs/reference/api': typeof DocsReferenceApiRoute
-  '/docs/reference/cli': typeof DocsReferenceCliRoute
+  '/docs/rules/$ruleId': typeof DocsRulesRuleIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/docs/getting-started': typeof DocsGettingStartedRoute
-  '/docs/installation': typeof DocsInstallationRoute
   '/docs': typeof DocsIndexRoute
-  '/docs/guides/routing': typeof DocsGuidesRoutingRoute
-  '/docs/guides/structure': typeof DocsGuidesStructureRoute
-  '/docs/guides/styling': typeof DocsGuidesStylingRoute
-  '/docs/reference/api': typeof DocsReferenceApiRoute
-  '/docs/reference/cli': typeof DocsReferenceCliRoute
+  '/docs/rules/$ruleId': typeof DocsRulesRuleIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/docs': typeof DocsRouteWithChildren
   '/docs/getting-started': typeof DocsGettingStartedRoute
-  '/docs/installation': typeof DocsInstallationRoute
   '/docs/': typeof DocsIndexRoute
-  '/docs/guides/routing': typeof DocsGuidesRoutingRoute
-  '/docs/guides/structure': typeof DocsGuidesStructureRoute
-  '/docs/guides/styling': typeof DocsGuidesStylingRoute
-  '/docs/reference/api': typeof DocsReferenceApiRoute
-  '/docs/reference/cli': typeof DocsReferenceCliRoute
+  '/docs/rules/$ruleId': typeof DocsRulesRuleIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | '/docs'
-    | '/docs/getting-started'
-    | '/docs/installation'
-    | '/docs/'
-    | '/docs/guides/routing'
-    | '/docs/guides/structure'
-    | '/docs/guides/styling'
-    | '/docs/reference/api'
-    | '/docs/reference/cli'
+    '/' | '/docs' | '/docs/getting-started' | '/docs/' | '/docs/rules/$ruleId'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/docs/getting-started'
-    | '/docs/installation'
-    | '/docs'
-    | '/docs/guides/routing'
-    | '/docs/guides/structure'
-    | '/docs/guides/styling'
-    | '/docs/reference/api'
-    | '/docs/reference/cli'
+  to: '/' | '/docs/getting-started' | '/docs' | '/docs/rules/$ruleId'
   id:
     | '__root__'
     | '/'
     | '/docs'
     | '/docs/getting-started'
-    | '/docs/installation'
     | '/docs/'
-    | '/docs/guides/routing'
-    | '/docs/guides/structure'
-    | '/docs/guides/styling'
-    | '/docs/reference/api'
-    | '/docs/reference/cli'
+    | '/docs/rules/$ruleId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -180,46 +112,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsGettingStartedRouteImport
       parentRoute: typeof DocsRoute
     }
-    '/docs/installation': {
-      id: '/docs/installation'
-      path: '/installation'
-      fullPath: '/docs/installation'
-      preLoaderRoute: typeof DocsInstallationRouteImport
-      parentRoute: typeof DocsRoute
-    }
-    '/docs/guides/routing': {
-      id: '/docs/guides/routing'
-      path: '/guides/routing'
-      fullPath: '/docs/guides/routing'
-      preLoaderRoute: typeof DocsGuidesRoutingRouteImport
-      parentRoute: typeof DocsRoute
-    }
-    '/docs/guides/structure': {
-      id: '/docs/guides/structure'
-      path: '/guides/structure'
-      fullPath: '/docs/guides/structure'
-      preLoaderRoute: typeof DocsGuidesStructureRouteImport
-      parentRoute: typeof DocsRoute
-    }
-    '/docs/guides/styling': {
-      id: '/docs/guides/styling'
-      path: '/guides/styling'
-      fullPath: '/docs/guides/styling'
-      preLoaderRoute: typeof DocsGuidesStylingRouteImport
-      parentRoute: typeof DocsRoute
-    }
-    '/docs/reference/api': {
-      id: '/docs/reference/api'
-      path: '/reference/api'
-      fullPath: '/docs/reference/api'
-      preLoaderRoute: typeof DocsReferenceApiRouteImport
-      parentRoute: typeof DocsRoute
-    }
-    '/docs/reference/cli': {
-      id: '/docs/reference/cli'
-      path: '/reference/cli'
-      fullPath: '/docs/reference/cli'
-      preLoaderRoute: typeof DocsReferenceCliRouteImport
+    '/docs/rules/$ruleId': {
+      id: '/docs/rules/$ruleId'
+      path: '/rules/$ruleId'
+      fullPath: '/docs/rules/$ruleId'
+      preLoaderRoute: typeof DocsRulesRuleIdRouteImport
       parentRoute: typeof DocsRoute
     }
   }
@@ -227,24 +124,14 @@ declare module '@tanstack/react-router' {
 
 interface DocsRouteChildren {
   DocsGettingStartedRoute: typeof DocsGettingStartedRoute
-  DocsInstallationRoute: typeof DocsInstallationRoute
   DocsIndexRoute: typeof DocsIndexRoute
-  DocsGuidesRoutingRoute: typeof DocsGuidesRoutingRoute
-  DocsGuidesStructureRoute: typeof DocsGuidesStructureRoute
-  DocsGuidesStylingRoute: typeof DocsGuidesStylingRoute
-  DocsReferenceApiRoute: typeof DocsReferenceApiRoute
-  DocsReferenceCliRoute: typeof DocsReferenceCliRoute
+  DocsRulesRuleIdRoute: typeof DocsRulesRuleIdRoute
 }
 
 const DocsRouteChildren: DocsRouteChildren = {
   DocsGettingStartedRoute: DocsGettingStartedRoute,
-  DocsInstallationRoute: DocsInstallationRoute,
   DocsIndexRoute: DocsIndexRoute,
-  DocsGuidesRoutingRoute: DocsGuidesRoutingRoute,
-  DocsGuidesStructureRoute: DocsGuidesStructureRoute,
-  DocsGuidesStylingRoute: DocsGuidesStylingRoute,
-  DocsReferenceApiRoute: DocsReferenceApiRoute,
-  DocsReferenceCliRoute: DocsReferenceCliRoute,
+  DocsRulesRuleIdRoute: DocsRulesRuleIdRoute,
 }
 
 const DocsRouteWithChildren = DocsRoute._addFileChildren(DocsRouteChildren)
