@@ -16,7 +16,7 @@ const DEFAULT_PARSER_OPTIONS = {
 type ValidTestCase = RuleTesterNamespace.ValidTestCase;
 type InvalidTestCase = RuleTesterNamespace.InvalidTestCase;
 
-export function runRuleTests<
+export const runRuleTests = <
   TMessageIds extends string,
   TOptions extends readonly unknown[] = readonly unknown[],
 >(
@@ -26,7 +26,7 @@ export function runRuleTests<
     valid: Array<string | ValidTestCase>;
     invalid: Array<InvalidTestCase>;
   },
-): void {
+): void => {
   const ruleTester = new RuleTester({
     languageOptions: {
       parser: tsParser,
@@ -42,4 +42,4 @@ export function runRuleTests<
       invalid: tests.invalid as never,
     },
   );
-}
+};

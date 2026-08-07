@@ -6,19 +6,14 @@ import type { OxlintRuleContext, OxlintRuleModule, TSESTree } from "../../types.
 
 type SourceCodeWithFilename = { filename?: string };
 
-function getFilename(context: OxlintRuleContext): string {
-  return context.filename ?? context.physicalFilename ?? context.getFilename?.() ?? (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ?? "";
-}
+const getFilename = (context: OxlintRuleContext): string =>
+  context.filename ?? context.physicalFilename ?? context.getFilename?.() ?? (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ?? "";
 
-function normalizePath(filename: string): string {
-  return filename.replaceAll("\\", "/");
-}
+const normalizePath = (filename: string): string => filename.replaceAll("\\", "/");
 
-function isTsxFile(filename: string): boolean {
-  return normalizePath(filename).endsWith(".tsx");
-}
+const isTsxFile = (filename: string): boolean => normalizePath(filename).endsWith(".tsx");
 
-function isIgnoredFile(filename: string): boolean {
+const isIgnoredFile = (filename: string): boolean => {
   const normalized = normalizePath(filename);
 
   return (
@@ -31,25 +26,21 @@ function isIgnoredFile(filename: string): boolean {
     /(?:^|\/)[A-Za-z0-9]+Store\.[cm]?tsx?$/.test(normalized) ||
     /(?:^|\/)[A-Za-z0-9]+Slice\.[cm]?tsx?$/.test(normalized)
   );
-}
+};
 
-function unwrapExpression(node: TSESTree.Node): TSESTree.Node {
+const unwrapExpression = (node: TSESTree.Node): TSESTree.Node => {
   if (node && (node.type === "ChainExpression" || node.type === "TSAsExpression" || node.type === "TSSatisfiesExpression" || node.type === "TSNonNullExpression")) {
     return unwrapExpression(node.expression);
   }
 
   return node;
-}
+};
 
-function isHandleName(name: string): boolean {
-  return /^handle[A-Z0-9]/.test(name);
-}
+const isHandleName = (name: string): boolean => /^handle[A-Z0-9]/.test(name);
 
-function isOnName(name: string): boolean {
-  return /^on[A-Z0-9]/.test(name);
-}
+const isOnName = (name: string): boolean => /^on[A-Z0-9]/.test(name);
 
-function getCalleeName(callee: TSESTree.Node): string {
+const getCalleeName = (callee: TSESTree.Node): string => {
   const expression = unwrapExpression(callee);
 
   if (expression?.type === "Identifier") {
@@ -67,7 +58,7 @@ function getCalleeName(callee: TSESTree.Node): string {
   }
 
   return "";
-}
+};
 
 const noHandleCallsOnRule: OxlintRuleModule<"noOnCall"> = {
   meta: {
@@ -90,15 +81,15 @@ const noHandleCallsOnRule: OxlintRuleModule<"noOnCall"> = {
     const functionNames = new WeakMap<TSESTree.Node, string>();
     const handleFunctionStack: boolean[] = [];
 
-    function enterFunction(node: TSESTree.FunctionDeclaration | TSESTree.FunctionExpression | TSESTree.ArrowFunctionExpression): void {
+    const enterFunction = (node: TSESTree.FunctionDeclaration | TSESTree.FunctionExpression | TSESTree.ArrowFunctionExpression): void => {
       const idName = node.type === "ArrowFunctionExpression" ? undefined : node.id?.name;
       const functionName = idName ?? functionNames.get(node) ?? "";
       handleFunctionStack.push(isHandleName(functionName));
-    }
+    };
 
-    function exitFunction(): void {
+    const exitFunction = (): void => {
       handleFunctionStack.pop();
-    }
+    };
 
     return {
       VariableDeclarator(node) {

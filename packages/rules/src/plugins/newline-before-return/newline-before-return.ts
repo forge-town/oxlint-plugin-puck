@@ -4,9 +4,8 @@
 
 import type { OxlintRuleContext, OxlintRuleModule, TSESLint, TSESTree } from "../../types.js";
 
-function getSourceCode(context: OxlintRuleContext<"expected" | "unexpected">): TSESLint.SourceCode {
-  return context.getSourceCode ? context.getSourceCode() : context.sourceCode;
-}
+const getSourceCode = (context: OxlintRuleContext<"expected" | "unexpected">): TSESLint.SourceCode =>
+  context.getSourceCode ? context.getSourceCode() : context.sourceCode;
 
 const newlineBeforeReturnRule: OxlintRuleModule<"expected" | "unexpected"> = {
   meta: {
@@ -29,13 +28,13 @@ const newlineBeforeReturnRule: OxlintRuleModule<"expected" | "unexpected"> = {
      * Marks a ReturnStatement as allowed (no blank line required)
      * when it is the direct body of an unbraced control statement.
      */
-    function allowUnbracedReturn(node: TSESTree.Statement): void {
+    const allowUnbracedReturn = (node: TSESTree.Statement): void => {
       if (node.type === "ReturnStatement") {
         allowedReturns.add(node);
       } else if (node.type === "BlockStatement" && node.body.length === 1) {
         // e.g. if (x) { return; } — still inside braces, so we do NOT allow it
       }
-    }
+    };
 
     return {
       // Control statements: allow return as direct body without braces

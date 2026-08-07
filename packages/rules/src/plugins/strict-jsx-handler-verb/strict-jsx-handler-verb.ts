@@ -6,33 +6,28 @@ import type { OxlintRuleContext, OxlintRuleModule, TSESTree } from "../../types.
 
 type SourceCodeWithFilename = { filename?: string };
 
-function getFilename(context: OxlintRuleContext): string {
-  return context.filename ?? context.physicalFilename ?? context.getFilename?.() ?? (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ?? "";
-}
+const getFilename = (context: OxlintRuleContext): string =>
+  context.filename ?? context.physicalFilename ?? context.getFilename?.() ?? (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ?? "";
 
-function normalizePath(filename: string): string {
-  return filename.replaceAll("\\", "/");
-}
+const normalizePath = (filename: string): string => filename.replaceAll("\\", "/");
 
-function isTsxFile(filename: string): boolean {
-  return normalizePath(filename).endsWith(".tsx");
-}
+const isTsxFile = (filename: string): boolean => normalizePath(filename).endsWith(".tsx");
 
-function isIgnoredFile(filename: string): boolean {
+const isIgnoredFile = (filename: string): boolean => {
   const normalized = normalizePath(filename);
 
   return normalized.includes("/__spec__/") || normalized.includes("/__tests__/") || normalized.includes("/e2e/") || normalized.includes("/routes/api/");
-}
+};
 
-function unwrapExpression(node: TSESTree.Node): TSESTree.Node {
+const unwrapExpression = (node: TSESTree.Node): TSESTree.Node => {
   if (node && (node.type === "ChainExpression" || node.type === "TSAsExpression" || node.type === "TSSatisfiesExpression" || node.type === "TSNonNullExpression")) {
     return unwrapExpression(node.expression);
   }
 
   return node;
-}
+};
 
-function getPropertyName(node: TSESTree.Node | null | undefined): string {
+const getPropertyName = (node: TSESTree.Node | null | undefined): string => {
   if (!node) {
     return "";
   }
@@ -46,23 +41,23 @@ function getPropertyName(node: TSESTree.Node | null | undefined): string {
   }
 
   return "";
-}
+};
 
-function getJsxAttributeName(node: TSESTree.JSXAttribute): string {
+const getJsxAttributeName = (node: TSESTree.JSXAttribute): string => {
   if (node?.name?.type === "JSXIdentifier") {
     return node.name.name;
   }
 
   return "";
-}
+};
 
-function getMemberPropertyName(node: TSESTree.Node): string {
+const getMemberPropertyName = (node: TSESTree.Node): string => {
   const expression = unwrapExpression(node);
 
   return expression?.type === "MemberExpression" ? getPropertyName(expression.property) : "";
-}
+};
 
-function getHandlerNameFromExpression(node: TSESTree.Node): string {
+const getHandlerNameFromExpression = (node: TSESTree.Node): string => {
   const expression = unwrapExpression(node);
 
   if (!expression) {
@@ -98,23 +93,19 @@ function getHandlerNameFromExpression(node: TSESTree.Node): string {
   }
 
   return "";
-}
+};
 
-function getHandlerName(node: TSESTree.JSXAttribute): string {
+const getHandlerName = (node: TSESTree.JSXAttribute): string => {
   if (!node?.value || node.value.type !== "JSXExpressionContainer") {
     return "";
   }
 
   return getHandlerNameFromExpression(node.value.expression);
-}
+};
 
-function isJsxEventProp(name: string): boolean {
-  return /^on[A-Z0-9]/.test(name);
-}
+const isJsxEventProp = (name: string): boolean => /^on[A-Z0-9]/.test(name);
 
-function isHandleName(name: string): boolean {
-  return /^handle[A-Z0-9]/.test(name);
-}
+const isHandleName = (name: string): boolean => /^handle[A-Z0-9]/.test(name);
 
 const strictJsxHandlerVerbRule: OxlintRuleModule<"mismatchedVerb"> = {
   meta: {

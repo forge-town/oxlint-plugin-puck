@@ -1,4 +1,4 @@
-import type { TSESLint, TSESTree } from "@typescript-eslint/utils";
+import type { TSESTree } from "@typescript-eslint/utils";
 import type { OxlintRuleContext, OxlintRuleModule } from "../../types.js";
 
 /**
@@ -59,7 +59,7 @@ const allowedVerbPrefixes = new Set([
   "write",
 ]);
 
-function getFilename(context: OxlintRuleContext): string {
+const getFilename = (context: OxlintRuleContext): string => {
   return (
     context.filename ??
     context.physicalFilename ??
@@ -67,24 +67,19 @@ function getFilename(context: OxlintRuleContext): string {
     (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ??
     ""
   );
-}
+};
 
-function getMethodFileBaseName(filename: string): string | undefined {
+const getMethodFileBaseName = (filename: string): string | undefined => {
   const normalized = filename.replaceAll("\\", "/");
   const match = normalized.match(METHOD_FILE_PATTERN);
 
   return match?.[1];
-}
+};
 
-function isFunctionLikeNode(node: TSESTree.Node | null | undefined): boolean {
-  return node?.type === "ArrowFunctionExpression" || node?.type === "FunctionExpression";
-}
+const isFunctionLikeNode = (node: TSESTree.Node | null | undefined): boolean =>
+  node?.type === "ArrowFunctionExpression" || node?.type === "FunctionExpression";
 
-function isFunctionLikeExportDeclaration(node: TSESTree.Node | null | undefined): boolean {
-  return node?.type === "FunctionDeclaration";
-}
-
-function isMethodName(name: string): boolean {
+const isMethodName = (name: string): boolean => {
   const verb = [...allowedVerbPrefixes]
     .sort((left, right) => right.length - left.length)
     .find((prefix) => name.startsWith(prefix));
@@ -96,7 +91,7 @@ function isMethodName(name: string): boolean {
   const noun = name.slice(verb.length);
 
   return /^[A-Z][\dA-Za-z]*$/.test(noun);
-}
+};
 
 type NamedFunctionLike = {
   name: string;
@@ -109,7 +104,7 @@ type RuntimeValueLike = {
   node: TSESTree.Identifier;
 };
 
-function collectVariableFunctionNames(node: TSESTree.Node | null | undefined): NamedFunctionLike[] {
+const collectVariableFunctionNames = (node: TSESTree.Node | null | undefined): NamedFunctionLike[] => {
   if (node?.type !== "VariableDeclaration") {
     return [];
   }
@@ -120,9 +115,9 @@ function collectVariableFunctionNames(node: TSESTree.Node | null | undefined): N
       name: (declarator.id as TSESTree.Identifier).name,
       node: declarator.id as TSESTree.Identifier,
     }));
-}
+};
 
-function collectRuntimeValueNames(node: TSESTree.Node | null | undefined): RuntimeValueLike[] {
+const collectRuntimeValueNames = (node: TSESTree.Node | null | undefined): RuntimeValueLike[] => {
   if (node?.type === "VariableDeclaration") {
     return node.declarations
       .filter((declarator) => declarator.id?.type === "Identifier")
@@ -144,7 +139,7 @@ function collectRuntimeValueNames(node: TSESTree.Node | null | undefined): Runti
   }
 
   return [];
-}
+};
 
 type ExportSpecifierLike = {
   exportedName: string;
@@ -152,7 +147,7 @@ type ExportSpecifierLike = {
   node: TSESTree.Identifier;
 };
 
-function collectExportSpecifiers(node: TSESTree.ExportNamedDeclaration): ExportSpecifierLike[] {
+const collectExportSpecifiers = (node: TSESTree.ExportNamedDeclaration): ExportSpecifierLike[] => {
   return (node.specifiers ?? [])
     .filter((specifier) => specifier.local?.type === "Identifier")
     .map((specifier) => ({
@@ -163,7 +158,7 @@ function collectExportSpecifiers(node: TSESTree.ExportNamedDeclaration): ExportS
       localName: (specifier.local as TSESTree.Identifier).name,
       node: specifier.local as TSESTree.Identifier,
     }));
-}
+};
 
 const strictMethodModuleRule: OxlintRuleModule<
   "extraRuntimeExport" | "invalidMethodName" | "multipleMethodExports" | "mismatchedFileName"

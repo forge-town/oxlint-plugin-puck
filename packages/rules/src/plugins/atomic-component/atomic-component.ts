@@ -7,7 +7,7 @@ import type { OxlintRuleContext, OxlintRuleModule } from "../../types.js";
 
 type SourceCodeWithFilename = { filename?: string };
 
-function getFilename(context: OxlintRuleContext): string {
+const getFilename = (context: OxlintRuleContext): string => {
   return (
     context.filename ??
     context.physicalFilename ??
@@ -15,35 +15,25 @@ function getFilename(context: OxlintRuleContext): string {
     (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ??
     ""
   );
-}
+};
 
-function normalizePath(filename: string): string {
-  return filename.replaceAll("\\", "/");
-}
+const normalizePath = (filename: string): string => filename.replaceAll("\\", "/");
 
-function getPathSegments(filename: string): string[] {
-  return normalizePath(filename).split("/");
-}
+const getPathSegments = (filename: string): string[] => normalizePath(filename).split("/");
 
-function getBasename(filename: string): string {
+const getBasename = (filename: string): string => {
   const segments = getPathSegments(filename);
 
   return segments.at(-1) ?? "";
-}
+};
 
-function removeExtension(filename: string): string {
-  return filename.replace(/\.[cm]?[jt]sx?$/, "");
-}
+const removeExtension = (filename: string): string => filename.replace(/\.[cm]?[jt]sx?$/, "");
 
-function isTsxFile(filename: string): boolean {
-  return normalizePath(filename).endsWith(".tsx");
-}
+const isTsxFile = (filename: string): boolean => normalizePath(filename).endsWith(".tsx");
 
-function isPascalCaseName(name: string): boolean {
-  return /^[A-Z][A-Za-z0-9]*$/.test(name);
-}
+const isPascalCaseName = (name: string): boolean => /^[A-Z][A-Za-z0-9]*$/.test(name);
 
-function isIgnoredFile(filename: string): boolean {
+const isIgnoredFile = (filename: string): boolean => {
   const normalized = normalizePath(filename);
 
   return (
@@ -55,9 +45,9 @@ function isIgnoredFile(filename: string): boolean {
     normalized.includes("/store/") ||
     /\.(?:test|spec|stories)\.tsx$/.test(normalized)
   );
-}
+};
 
-function getExpectedComponentName(filename: string): string {
+const getExpectedComponentName = (filename: string): string => {
   const fileName = getBasename(filename);
   const moduleName = removeExtension(fileName);
 
@@ -69,9 +59,9 @@ function getExpectedComponentName(filename: string): string {
   const parentName = segments.at(-2) ?? "";
 
   return isPascalCaseName(parentName) ? parentName : "";
-}
+};
 
-function unwrapExpression(node: TSESTree.Node | null | undefined): TSESTree.Node | null | undefined {
+const unwrapExpression = (node: TSESTree.Node | null | undefined): TSESTree.Node | null | undefined => {
   if (
     node &&
     (node.type === "ChainExpression" ||
@@ -84,9 +74,9 @@ function unwrapExpression(node: TSESTree.Node | null | undefined): TSESTree.Node
   }
 
   return node;
-}
+};
 
-function getStaticPropertyName(node: TSESTree.Node | null | undefined): string {
+const getStaticPropertyName = (node: TSESTree.Node | null | undefined): string => {
   if (!node) {
     return "";
   }
@@ -100,9 +90,9 @@ function getStaticPropertyName(node: TSESTree.Node | null | undefined): string {
   }
 
   return "";
-}
+};
 
-function getCalleeName(callee: TSESTree.Node): string {
+const getCalleeName = (callee: TSESTree.Node): string => {
   const expression = unwrapExpression(callee);
 
   if (expression?.type === "Identifier") {
@@ -114,17 +104,17 @@ function getCalleeName(callee: TSESTree.Node): string {
   }
 
   return "";
-}
+};
 
-function isComponentWrapperCall(node: TSESTree.CallExpression): boolean {
+const isComponentWrapperCall = (node: TSESTree.CallExpression): boolean => {
   const calleeName = getCalleeName(node.callee);
 
   return calleeName === "memo" || calleeName === "forwardRef";
 }
 
-function getFunctionExpression(
+const getFunctionExpression = (
   node: TSESTree.Node | null | undefined,
-): TSESTree.ArrowFunctionExpression | TSESTree.FunctionExpression | null {
+): TSESTree.ArrowFunctionExpression | TSESTree.FunctionExpression | null => {
   const expression = unwrapExpression(node);
 
   if (expression?.type === "ArrowFunctionExpression" || expression?.type === "FunctionExpression") {
@@ -136,9 +126,9 @@ function getFunctionExpression(
   }
 
   return getFunctionExpression(expression.arguments?.[0]);
-}
+};
 
-function containsJsx(node: unknown, seen = new WeakSet<object>()): boolean {
+const containsJsx = (node: unknown, seen = new WeakSet<object>()): boolean => {
   if (!node || typeof node !== "object") {
     return false;
   }
@@ -172,14 +162,14 @@ function containsJsx(node: unknown, seen = new WeakSet<object>()): boolean {
   }
 
   return false;
-}
+};
 
-function functionReturnsJsx(
+const functionReturnsJsx = (
   functionNode:
     | TSESTree.FunctionDeclaration
     | TSESTree.ArrowFunctionExpression
     | TSESTree.FunctionExpression,
-): boolean {
+): boolean => {
   const body = unwrapExpression(functionNode.body);
 
   if (!body) {
@@ -193,9 +183,9 @@ function functionReturnsJsx(
   return body.body.some(
     (statement) => statement.type === "ReturnStatement" && containsJsx(statement.argument),
   );
-}
+};
 
-function getDeclarationName(declaration: TSESTree.Node | null | undefined): string {
+const getDeclarationName = (declaration: TSESTree.Node | null | undefined): string => {
   if (
     declaration?.type === "FunctionDeclaration" ||
     declaration?.type === "TSInterfaceDeclaration" ||
@@ -205,20 +195,19 @@ function getDeclarationName(declaration: TSESTree.Node | null | undefined): stri
   }
 
   return "";
-}
+};
 
-function getExportSpecifierName(specifier: TSESTree.ExportSpecifier): string {
-  return specifier.exported?.type === "Identifier"
+const getExportSpecifierName = (specifier: TSESTree.ExportSpecifier): string =>
+  specifier.exported?.type === "Identifier"
     ? specifier.exported.name
     : specifier.local?.type === "Identifier"
       ? specifier.local.name
       : "";
-}
 
-function getExportKind(
+const getExportKind = (
   statement: TSESTree.ExportNamedDeclaration,
   specifier?: TSESTree.ExportSpecifier,
-): "type" | "value" {
+): "type" | "value" => {
   if (statement.exportKind === "type" || specifier?.exportKind === "type") {
     return "type";
   }
@@ -240,10 +229,10 @@ type LocalDeclaration = {
   type: string;
 };
 
-function collectVariableDeclarations(
+const collectVariableDeclarations = (
   declaration: TSESTree.VariableDeclaration,
   declarations: LocalDeclaration[],
-): void {
+): void => {
   for (const declarator of declaration.declarations ?? []) {
     if (declarator.id?.type !== "Identifier") {
       continue;
@@ -258,9 +247,9 @@ function collectVariableDeclarations(
       type: "variable",
     });
   }
-}
+};
 
-function collectLocalDeclarations(program: TSESTree.Program): LocalDeclaration[] {
+const collectLocalDeclarations = (program: TSESTree.Program): LocalDeclaration[] => {
   const declarations: LocalDeclaration[] = [];
 
   for (const statement of program.body) {
@@ -295,7 +284,7 @@ function collectLocalDeclarations(program: TSESTree.Program): LocalDeclaration[]
   }
 
   return declarations;
-}
+};
 
 type LocalExport = {
   kind: "type" | "value";
@@ -303,7 +292,7 @@ type LocalExport = {
   node: TSESTree.Node;
 };
 
-function collectLocalExports(program: TSESTree.Program): LocalExport[] {
+const collectLocalExports = (program: TSESTree.Program): LocalExport[] => {
   const exports: LocalExport[] = [];
 
   for (const statement of program.body) {

@@ -11,46 +11,43 @@ import type { OxlintRuleContext, OxlintRuleModule } from "../../types.js";
 
 type JsxAttributeType = TSESTree.JSXAttribute | TSESTree.JSXSpreadAttribute;
 
-function propName(prop: TSESTree.JSXAttribute): string {
+const propName = (prop: TSESTree.JSXAttribute): string => {
   if (prop.name.type === "JSXNamespacedName") {
     return `${prop.name.namespace.name}:${prop.name.name.name}`;
   }
 
   return prop.name.name;
-}
+};
 
-function elementType(node: TSESTree.JSXOpeningElement): string {
+const getMemberName = (member: TSESTree.JSXIdentifier | TSESTree.JSXMemberExpression): string => {
+  if (member.type === "JSXMemberExpression") {
+    return `${getMemberName(member.object as TSESTree.JSXIdentifier | TSESTree.JSXMemberExpression)}.${member.property.name}`;
+  }
+
+  return member.name;
+};
+
+const elementType = (node: TSESTree.JSXOpeningElement): string => {
   const name = node.name;
   if (name.type === "JSXIdentifier") {
     return name.name;
   }
   if (name.type === "JSXMemberExpression") {
-    const memberName = (member: TSESTree.JSXIdentifier | TSESTree.JSXMemberExpression): string => {
-      if (member.type === "JSXMemberExpression") {
-        return `${memberName(member.object as TSESTree.JSXIdentifier | TSESTree.JSXMemberExpression)}.${member.property.name}`;
-      }
-
-      return member.name;
-    };
-
-    return memberName(name);
+    return getMemberName(name);
   }
   if (name.type === "JSXNamespacedName") {
     return `${name.namespace.name}:${name.name.name}`;
   }
 
   return "";
-}
+};
 
 const COMPAT_TAG_REGEX = /^[a-z]/;
 
-function isDOMComponent(node: TSESTree.JSXOpeningElement): boolean {
-  return COMPAT_TAG_REGEX.test(elementType(node));
-}
+const isDOMComponent = (node: TSESTree.JSXOpeningElement): boolean =>
+  COMPAT_TAG_REGEX.test(elementType(node));
 
-function isCallbackPropName(name: string): boolean {
-  return /^on[A-Z]/.test(name);
-}
+const isCallbackPropName = (name: string): boolean => /^on[A-Z]/.test(name);
 
 type RuleMessageIds =
   | "noUnreservedProps"
@@ -89,15 +86,13 @@ type SortOptions = {
   locale: string;
 };
 
-function getSourceCode(context: OxlintRuleContext<RuleMessageIds, [RuleOptions]>): TSESLint.SourceCode {
-  return context.getSourceCode ? context.getSourceCode() : context.sourceCode;
-}
+const getSourceCode = (context: OxlintRuleContext<RuleMessageIds, [RuleOptions]>): TSESLint.SourceCode =>
+  context.getSourceCode ? context.getSourceCode() : context.sourceCode;
 
 // --- Rule implementation ---
 
-function isMultilineProp(node: TSESTree.JSXAttribute): boolean {
-  return node.loc.start.line !== node.loc.end.line;
-}
+const isMultilineProp = (node: TSESTree.JSXAttribute): boolean =>
+  node.loc.start.line !== node.loc.end.line;
 
 const messages: Record<RuleMessageIds, string> = {
   noUnreservedProps: "A customized reserved first list must only contain a subset of React reserved props. Remove: {{unreservedWords}}",
@@ -114,11 +109,9 @@ const messages: Record<RuleMessageIds, string> = {
 
 const RESERVED_PROPS_LIST = ["children", "dangerouslySetInnerHTML", "key", "ref"];
 
-function isReservedPropName(name: string, list: string[]): boolean {
-  return list.indexOf(name) >= 0;
-}
+const isReservedPropName = (name: string, list: string[]): boolean => list.includes(name);
 
-function getSortFirstIndex(name: string, sortFirstList: string[], ignoreCase: boolean): number {
+const getSortFirstIndex = (name: string, sortFirstList: string[], ignoreCase: boolean): number => {
   const normalizedPropName = ignoreCase ? name.toLowerCase() : name;
   for (let i = 0; i < sortFirstList.length; i++) {
     const normalizedListName = ignoreCase ? sortFirstList[i]!.toLowerCase() : sortFirstList[i];
@@ -128,18 +121,18 @@ function getSortFirstIndex(name: string, sortFirstList: string[], ignoreCase: bo
   }
 
   return -1;
-}
+};
 
 // Module-level WeakMap reset per file via Program() visitor
 let attributeMap: WeakMap<TSESTree.JSXAttribute, { end: number; hasComment: boolean }> = new WeakMap();
 
-function shouldSortToEnd(node: TSESTree.JSXAttribute): boolean {
+const shouldSortToEnd = (node: TSESTree.JSXAttribute): boolean => {
   const attr = attributeMap.get(node);
 
   return !!attr && !!attr.hasComment;
-}
+};
 
-function contextCompare(a: TSESTree.JSXAttribute, b: TSESTree.JSXAttribute, options: SortOptions): number {
+const contextCompare = (a: TSESTree.JSXAttribute, b: TSESTree.JSXAttribute, options: SortOptions): number => {
   let aProp = propName(a);
   let bProp = propName(b);
 
@@ -236,17 +229,17 @@ function contextCompare(a: TSESTree.JSXAttribute, b: TSESTree.JSXAttribute, opti
   return aProp.localeCompare(bProp, actualLocale);
 }
 
-function getGroupsOfSortableAttributes(
+const getGroupsOfSortableAttributes = (
   attributes: JsxAttributeType[],
   context: OxlintRuleContext<RuleMessageIds, [RuleOptions]>,
-): TSESTree.JSXAttribute[][] {
+): TSESTree.JSXAttribute[][] => {
   const sourceCode = getSourceCode(context);
   const sortableAttributeGroups: TSESTree.JSXAttribute[][] = [];
   let groupCount = 0;
 
-  function addtoSortableAttributeGroups(attribute: TSESTree.JSXAttribute) {
+  const addtoSortableAttributeGroups = (attribute: TSESTree.JSXAttribute): void => {
     sortableAttributeGroups[groupCount - 1]!.push(attribute);
-  }
+  };
 
   for (let i = 0; i < attributes.length; i++) {
     const attribute = attributes[i]!;
@@ -326,11 +319,11 @@ function getGroupsOfSortableAttributes(
   return sortableAttributeGroups;
 }
 
-function generateFixerFunction(
+const generateFixerFunction = (
   node: TSESTree.JSXOpeningElement,
   context: OxlintRuleContext<RuleMessageIds, [RuleOptions]>,
   reservedList: string[],
-): TSESLint.ReportFixFunction {
+): TSESLint.ReportFixFunction => {
   const attributes = [...node.attributes];
   const configuration = (context.options[0] || {}) as RuleOptions;
   const ignoreCase = configuration.ignoreCase || false;
@@ -390,27 +383,25 @@ function generateFixerFunction(
   };
 }
 
-function validateReservedFirstConfig(
+const validateReservedFirstConfig = (
   context: OxlintRuleContext<RuleMessageIds, [RuleOptions]>,
   reservedFirst: string[] | boolean | undefined,
-): ((decl: TSESTree.JSXAttribute) => void) | undefined {
-  if (reservedFirst) {
-    if (Array.isArray(reservedFirst)) {
-      const nonReservedWords = reservedFirst.filter((word) => !isReservedPropName(word, RESERVED_PROPS_LIST));
-      if (reservedFirst.length === 0) {
-        return function Report(decl: TSESTree.JSXAttribute) {
-          context.report({ node: decl, messageId: "listIsEmpty" });
-        };
-      }
-      if (nonReservedWords.length > 0) {
-        return function Report(decl: TSESTree.JSXAttribute) {
-          context.report({
-            node: decl,
-            messageId: "noUnreservedProps",
-            data: { unreservedWords: nonReservedWords.toString() },
-          });
-        };
-      }
+): ((decl: TSESTree.JSXAttribute) => void) | undefined => {
+  if (reservedFirst && Array.isArray(reservedFirst)) {
+    const nonReservedWords = reservedFirst.filter((word) => !isReservedPropName(word, RESERVED_PROPS_LIST));
+    if (reservedFirst.length === 0) {
+      return function Report(decl: TSESTree.JSXAttribute) {
+        context.report({ node: decl, messageId: "listIsEmpty" });
+      };
+    }
+    if (nonReservedWords.length > 0) {
+      return function Report(decl: TSESTree.JSXAttribute) {
+        context.report({
+          node: decl,
+          messageId: "noUnreservedProps",
+          data: { unreservedWords: nonReservedWords.toString() },
+        });
+      };
     }
   }
 
@@ -419,13 +410,13 @@ function validateReservedFirstConfig(
 
 const reportedNodeAttributes = new WeakMap<TSESTree.JSXAttribute, RuleMessageIds[]>();
 
-function reportNodeAttribute(
+const reportNodeAttribute = (
   nodeAttribute: TSESTree.JSXAttribute,
   errorType: RuleMessageIds,
   node: TSESTree.JSXOpeningElement,
   context: OxlintRuleContext<RuleMessageIds, [RuleOptions]>,
   reservedList: string[],
-): void {
+): void => {
   const errors = reportedNodeAttributes.get(nodeAttribute) || [];
   if (errors.includes(errorType)) {
     return;

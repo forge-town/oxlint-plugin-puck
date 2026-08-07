@@ -7,7 +7,7 @@ import type { OxlintRuleContext, OxlintRuleModule } from "../../types.js";
 
 type SourceCodeWithFilename = { filename?: string };
 
-function getFilename(context: OxlintRuleContext): string {
+const getFilename = (context: OxlintRuleContext): string => {
   return (
     context.filename ??
     context.physicalFilename ??
@@ -15,30 +15,26 @@ function getFilename(context: OxlintRuleContext): string {
     (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ??
     ""
   );
-}
+};
 
-function normalizePath(filename: string): string {
-  return filename.replaceAll("\\", "/");
-}
+const normalizePath = (filename: string): string => filename.replaceAll("\\", "/");
 
-function getBasename(filename: string): string {
+const getBasename = (filename: string): string => {
   const normalized = normalizePath(filename);
   const segments = normalized.split("/");
 
   return segments.at(-1) ?? "";
-}
+};
 
-function removeExtension(filename: string): string {
-  return filename.replace(/\.[cm]?[jt]sx?$/, "");
-}
+const removeExtension = (filename: string): string => filename.replace(/\.[cm]?[jt]sx?$/, "");
 
-function isDbSchemaFile(filename: string): boolean {
+const isDbSchemaFile = (filename: string): boolean => {
   const normalized = normalizePath(filename);
 
   return normalized.includes("/packages/db/src/schema") || normalized.includes("/packages/db/src/schemas/");
-}
+};
 
-function isSchemaFile(filename: string): boolean {
+const isSchemaFile = (filename: string): boolean => {
   const normalized = normalizePath(filename);
 
   if (isDbSchemaFile(normalized)) {
@@ -46,31 +42,27 @@ function isSchemaFile(filename: string): boolean {
   }
 
   return normalized.includes("/packages/schemas/src/") || normalized.includes("/schemas/") || normalized.endsWith("/schema.ts") || normalized.endsWith("/schema.tsx");
-}
+};
 
-function isSchemasDirectoryFile(filename: string): boolean {
+const isSchemasDirectoryFile = (filename: string): boolean => {
   const normalized = normalizePath(filename);
 
   return !isDbSchemaFile(normalized) && !normalized.includes("/packages/schemas/src/") && normalized.includes("/schemas/");
-}
+};
 
-function isSchemaModuleFileName(fileName: string): boolean {
-  return /^[A-Z][A-Za-z0-9]*Schemas\.[cm]?[jt]sx?$/.test(fileName);
-}
+const isSchemaModuleFileName = (fileName: string): boolean =>
+  /^[A-Z][A-Za-z0-9]*Schemas\.[cm]?[jt]sx?$/.test(fileName);
 
-function isAtomicSchemaFileName(fileName: string): boolean {
-  return /^[A-Z][A-Za-z0-9]*\.schema\.[cm]?[jt]sx?$/.test(fileName);
-}
+const isAtomicSchemaFileName = (fileName: string): boolean =>
+  /^[A-Z][A-Za-z0-9]*\.schema\.[cm]?[jt]sx?$/.test(fileName);
 
-function isIndexFileName(fileName: string): boolean {
-  return /^index\.[cm]?[jt]sx?$/.test(fileName);
-}
+const isIndexFileName = (fileName: string): boolean =>
+  /^index\.[cm]?[jt]sx?$/.test(fileName);
 
-function isExportOnlyStatement(statement: TSESTree.Statement): boolean {
-  return statement.type === "ExportAllDeclaration" || (statement.type === "ExportNamedDeclaration" && Boolean(statement.source));
-}
+const isExportOnlyStatement = (statement: TSESTree.Statement): boolean =>
+  statement.type === "ExportAllDeclaration" || (statement.type === "ExportNamedDeclaration" && Boolean(statement.source));
 
-function getNonExportOnlyStatement(program: TSESTree.Program): TSESTree.Statement | undefined {
+const getNonExportOnlyStatement = (program: TSESTree.Program): TSESTree.Statement | undefined => {
   return program.body.find((statement) => {
     if (statement.type === "EmptyStatement") {
       return false;
@@ -78,9 +70,9 @@ function getNonExportOnlyStatement(program: TSESTree.Program): TSESTree.Statemen
 
     return !isExportOnlyStatement(statement);
   });
-}
+};
 
-function getDeclarationNames(declaration: TSESTree.NamedExportDeclarations | null | undefined): string[] {
+const getDeclarationNames = (declaration: TSESTree.NamedExportDeclarations | null | undefined): string[] => {
   if (!declaration) {
     return [];
   }
@@ -103,9 +95,9 @@ function getDeclarationNames(declaration: TSESTree.NamedExportDeclarations | nul
     .map((item) => item.id)
     .filter((id): id is TSESTree.Identifier => id?.type === "Identifier")
     .map((id) => id.name);
-}
+};
 
-function getExportSpecifierName(specifier: TSESTree.ExportSpecifier): string | null {
+const getExportSpecifierName = (specifier: TSESTree.ExportSpecifier): string | null => {
   if (specifier.exported?.type === "Identifier") {
     return specifier.exported.name;
   }
@@ -115,15 +107,15 @@ function getExportSpecifierName(specifier: TSESTree.ExportSpecifier): string | n
   }
 
   return null;
-}
+};
 
-function getDeclarationKind(declaration: TSESTree.NamedExportDeclarations | null | undefined): "type" | "value" {
+const getDeclarationKind = (declaration: TSESTree.NamedExportDeclarations | null | undefined): "type" | "value" => {
   if (declaration?.type === "TSTypeAliasDeclaration" || declaration?.type === "TSInterfaceDeclaration") {
     return "type";
   }
 
   return "value";
-}
+};
 
 type LocalExport = {
   kind: "type" | "value";
@@ -131,7 +123,7 @@ type LocalExport = {
   node: TSESTree.Node;
 };
 
-function getLocalExports(program: TSESTree.Program): LocalExport[] {
+const getLocalExports = (program: TSESTree.Program): LocalExport[] => {
   const localExports: LocalExport[] = [];
 
   for (const statement of program.body) {
@@ -169,17 +161,14 @@ function getLocalExports(program: TSESTree.Program): LocalExport[] {
   }
 
   return localExports;
-}
+};
 
-function getLocalValueExports(localExports: LocalExport[]): LocalExport[] {
-  return localExports.filter((item) => item.kind === "value");
-}
+const getLocalValueExports = (localExports: LocalExport[]): LocalExport[] =>
+  localExports.filter((item) => item.kind === "value");
 
-function isZodImportSource(value: string | undefined): boolean {
-  return value === "zod" || value === "zod/v4";
-}
+const isZodImportSource = (value: string | undefined): boolean => value === "zod" || value === "zod/v4";
 
-function getZodImportNames(program: TSESTree.Program): Set<string> {
+const getZodImportNames = (program: TSESTree.Program): Set<string> => {
   const names = new Set<string>();
 
   for (const statement of program.body) {
@@ -199,9 +188,9 @@ function getZodImportNames(program: TSESTree.Program): Set<string> {
   }
 
   return names;
-}
+};
 
-function getVariableInitializers(program: TSESTree.Program, names: Set<string>): TSESTree.Expression[] {
+const getVariableInitializers = (program: TSESTree.Program, names: Set<string>): TSESTree.Expression[] => {
   const initializers: TSESTree.Expression[] = [];
 
   for (const statement of program.body) {
@@ -219,9 +208,9 @@ function getVariableInitializers(program: TSESTree.Program, names: Set<string>):
   }
 
   return initializers;
-}
+};
 
-function nodeReferencesAnyName(node: unknown, names: Set<string>, seen = new WeakSet<object>()): boolean {
+const nodeReferencesAnyName = (node: unknown, names: Set<string>, seen = new WeakSet<object>()): boolean => {
   if (!node || typeof node !== "object") {
     return false;
   }
@@ -255,9 +244,9 @@ function nodeReferencesAnyName(node: unknown, names: Set<string>, seen = new Wea
   }
 
   return false;
-}
+};
 
-function hasZodSchemaDefinition(program: TSESTree.Program, schemaValueExports: LocalExport[]): boolean {
+const hasZodSchemaDefinition = (program: TSESTree.Program, schemaValueExports: LocalExport[]): boolean => {
   const zodImportNames = getZodImportNames(program);
 
   if (zodImportNames.size === 0) {
@@ -268,9 +257,9 @@ function hasZodSchemaDefinition(program: TSESTree.Program, schemaValueExports: L
   const initializers = getVariableInitializers(program, schemaNames);
 
   return initializers.some((initializer) => nodeReferencesAnyName(initializer, zodImportNames));
-}
+};
 
-function isCompanionTypeName(typeName: string, valueName: string): boolean {
+const isCompanionTypeName = (typeName: string, valueName: string): boolean => {
   if (valueName.endsWith("Schema") && typeName === valueName.slice(0, -"Schema".length)) {
     return true;
   }
@@ -293,9 +282,9 @@ function isCompanionTypeName(typeName: string, valueName: string): boolean {
   }
 
   return false;
-}
+};
 
-function getPrimaryExportNames(localExports: LocalExport[]): string[] {
+const getPrimaryExportNames = (localExports: LocalExport[]): string[] => {
   const valueExportNames = localExports
     .filter((item) => item.kind === "value")
     .filter((item) => !/^[A-Z0-9_]+$/.test(item.name))

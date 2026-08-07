@@ -7,7 +7,7 @@ import type { OxlintRuleContext, OxlintRuleModule } from "../../types.js";
 
 type SourceCodeWithFilename = { filename?: string };
 
-function getFilename(context: OxlintRuleContext): string {
+const getFilename = (context: OxlintRuleContext): string => {
   return (
     context.filename ??
     context.physicalFilename ??
@@ -15,21 +15,15 @@ function getFilename(context: OxlintRuleContext): string {
     (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ??
     ""
   );
-}
+};
 
-function normalizePath(filename: string): string {
-  return filename.replaceAll("\\", "/");
-}
+const normalizePath = (filename: string): string => filename.replaceAll("\\", "/");
 
-function isTsxFile(filename: string): boolean {
-  return normalizePath(filename).endsWith(".tsx");
-}
+const isTsxFile = (filename: string): boolean => normalizePath(filename).endsWith(".tsx");
 
-function isTsOrTsxFile(filename: string): boolean {
-  return /\.[cm]?tsx?$/.test(normalizePath(filename));
-}
+const isTsOrTsxFile = (filename: string): boolean => /\.[cm]?tsx?$/.test(normalizePath(filename));
 
-function isIgnoredFile(filename: string): boolean {
+const isIgnoredFile = (filename: string): boolean => {
   const normalized = normalizePath(filename);
 
   return (
@@ -42,21 +36,19 @@ function isIgnoredFile(filename: string): boolean {
     /(?:^|\/)[A-Za-z0-9]+Store\.[cm]?tsx?$/.test(normalized) ||
     /(?:^|\/)[A-Za-z0-9]+Slice\.[cm]?tsx?$/.test(normalized)
   );
-}
+};
 
-function isHandleName(name: string): boolean {
-  return /^handle[A-Z0-9]/.test(name);
-}
+const isHandleName = (name: string): boolean => /^handle[A-Z0-9]/.test(name);
 
-function unwrapExpression(node: TSESTree.Node | null | undefined): TSESTree.Node | null | undefined {
+const unwrapExpression = (node: TSESTree.Node | null | undefined): TSESTree.Node | null | undefined => {
   if (node && (node.type === "ChainExpression" || node.type === "TSAsExpression" || node.type === "TSSatisfiesExpression" || node.type === "TSNonNullExpression")) {
     return unwrapExpression(node.expression);
   }
 
   return node;
-}
+};
 
-function getCalleeName(callee: TSESTree.Node): string {
+const getCalleeName = (callee: TSESTree.Node): string => {
   const expression = unwrapExpression(callee);
 
   if (expression?.type === "Identifier") {
@@ -74,9 +66,9 @@ function getCalleeName(callee: TSESTree.Node): string {
   }
 
   return "";
-}
+};
 
-function isStoreHookCall(node: TSESTree.Node | null | undefined): boolean {
+const isStoreHookCall = (node: TSESTree.Node | null | undefined): boolean => {
   const expression = unwrapExpression(node);
 
   if (expression?.type !== "CallExpression") {
@@ -96,9 +88,9 @@ function isStoreHookCall(node: TSESTree.Node | null | undefined): boolean {
   const storeArgument = unwrapExpression(expression.arguments?.[0]);
 
   return storeArgument?.type === "Identifier" && /(?:store|Store)$/.test(storeArgument.name);
-}
+};
 
-function isUseStoreSelectorCall(node: TSESTree.Node | null | undefined, handleName: string): boolean {
+const isUseStoreSelectorCall = (node: TSESTree.Node | null | undefined, handleName: string): boolean => {
   const expression = unwrapExpression(node);
 
   if (expression?.type !== "CallExpression" || !isStoreHookCall(expression)) {
@@ -126,9 +118,9 @@ function isUseStoreSelectorCall(node: TSESTree.Node | null | undefined, handleNa
   const selectedHandleName = getPropertyName((body as { property?: TSESTree.Node } | null)?.property);
 
   return isHandleName(selectedHandleName);
-}
+};
 
-function getPropertyName(node: TSESTree.Node | null | undefined): string {
+const getPropertyName = (node: TSESTree.Node | null | undefined): string => {
   if (!node) {
     return "";
   }
@@ -142,37 +134,37 @@ function getPropertyName(node: TSESTree.Node | null | undefined): string {
   }
 
   return "";
-}
+};
 
-function isMemberExpressionForHandle(node: TSESTree.Node | null | undefined, handleName: string): boolean {
+const isMemberExpressionForHandle = (node: TSESTree.Node | null | undefined, handleName: string): boolean => {
   const expression = unwrapExpression(node);
 
   return expression?.type === "MemberExpression" && getPropertyName(expression.property) === handleName;
-}
+};
 
-function isAllowedStoreObjectPattern(
+const isAllowedStoreObjectPattern = (
   id: TSESTree.Identifier | TSESTree.BindingPattern,
   init: TSESTree.Expression | null | undefined,
-): boolean {
+): boolean => {
   if (id.type !== "ObjectPattern") {
     return false;
   }
 
   return isStoreHookCall(init);
-}
+};
 
-function isAllowedStoreIdentifier(
+const isAllowedStoreIdentifier = (
   id: TSESTree.Identifier | TSESTree.BindingPattern,
   init: TSESTree.Expression | null | undefined,
-): boolean {
+): boolean => {
   if (id.type !== "Identifier") {
     return false;
   }
 
   return isUseStoreSelectorCall(init, id.name);
-}
+};
 
-function getBoundIdentifierName(node: TSESTree.Node | null | undefined): string {
+const getBoundIdentifierName = (node: TSESTree.Node | null | undefined): string => {
   const expression = unwrapExpression(node);
 
   if (expression?.type === "Identifier") {
@@ -184,9 +176,9 @@ function getBoundIdentifierName(node: TSESTree.Node | null | undefined): string 
   }
 
   return "";
-}
+};
 
-function reportIdentifier(context: OxlintRuleContext<"componentHandler">, node: TSESTree.Node, name: string): void {
+const reportIdentifier = (context: OxlintRuleContext<"componentHandler">, node: TSESTree.Node, name: string): void => {
   if (!isHandleName(name)) {
     return;
   }
@@ -198,20 +190,20 @@ function reportIdentifier(context: OxlintRuleContext<"componentHandler">, node: 
       name,
     },
   });
-}
+};
 
-function isFunctionExpression(node: TSESTree.Node | null | undefined): node is
+const isFunctionExpression = (node: TSESTree.Node | null | undefined): node is
   | TSESTree.ArrowFunctionExpression
-  | TSESTree.FunctionExpression {
+  | TSESTree.FunctionExpression => {
   const expression = unwrapExpression(node);
 
   return expression?.type === "ArrowFunctionExpression" || expression?.type === "FunctionExpression";
-}
+};
 
-function getFunctionExpression(node: TSESTree.Node | null | undefined):
+const getFunctionExpression = (node: TSESTree.Node | null | undefined):
   | TSESTree.ArrowFunctionExpression
   | TSESTree.FunctionExpression
-  | null {
+  | null => {
   const expression = unwrapExpression(node);
 
   if (isFunctionExpression(expression)) {
@@ -229,9 +221,9 @@ function getFunctionExpression(node: TSESTree.Node | null | undefined):
   const callback = unwrapExpression(expression.arguments?.[0]);
 
   return isFunctionExpression(callback) ? callback : null;
-}
+};
 
-function getStaticPropertyName(node: TSESTree.Node | null | undefined): string {
+const getStaticPropertyName = (node: TSESTree.Node | null | undefined): string => {
   if (!node) {
     return "";
   }
@@ -245,9 +237,9 @@ function getStaticPropertyName(node: TSESTree.Node | null | undefined): string {
   }
 
   return "";
-}
+};
 
-function getHandleFunctionName(node: TSESTree.Node): string {
+const getHandleFunctionName = (node: TSESTree.Node): string => {
   if (node.type === "FunctionDeclaration") {
     return node.id?.name ?? "";
   }
@@ -261,13 +253,13 @@ function getHandleFunctionName(node: TSESTree.Node): string {
   }
 
   return "";
-}
+};
 
-function reportHandleReturnFunction(
+const reportHandleReturnFunction = (
   context: OxlintRuleContext<"handleReturnFunction">,
   node: TSESTree.Node,
   name: string,
-): void {
+): void => {
   context.report({
     node,
     messageId: "handleReturnFunction",
@@ -275,9 +267,9 @@ function reportHandleReturnFunction(
       name,
     },
   });
-}
+};
 
-function checkFunctionReturnsFunction(
+const checkFunctionReturnsFunction = (
   context: OxlintRuleContext<"handleReturnFunction">,
   functionNode:
     | TSESTree.FunctionDeclaration
@@ -285,7 +277,7 @@ function checkFunctionReturnsFunction(
     | TSESTree.FunctionExpression,
   reportNode: TSESTree.Node,
   name: string,
-): void {
+): void => {
   if (!isHandleName(name)) {
     return;
   }
@@ -307,7 +299,7 @@ function checkFunctionReturnsFunction(
       reportHandleReturnFunction(context, statement.argument, name);
     }
   }
-}
+};
 
 const noComponentHandlersRule: OxlintRuleModule<"componentHandler"> = {
   meta: {

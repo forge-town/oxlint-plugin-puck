@@ -6,19 +6,14 @@ import type { OxlintRuleContext, OxlintRuleModule, TSESTree } from "../../types.
 
 type SourceCodeWithFilename = { filename?: string };
 
-function getFilename(context: OxlintRuleContext): string {
-  return context.filename ?? context.physicalFilename ?? context.getFilename?.() ?? (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ?? "";
-}
+const getFilename = (context: OxlintRuleContext): string =>
+  context.filename ?? context.physicalFilename ?? context.getFilename?.() ?? (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ?? "";
 
-function normalizePath(filename: string): string {
-  return filename.replaceAll("\\", "/");
-}
+const normalizePath = (filename: string): string => filename.replaceAll("\\", "/");
 
-function isTsxFile(filename: string): boolean {
-  return normalizePath(filename).endsWith(".tsx");
-}
+const isTsxFile = (filename: string): boolean => normalizePath(filename).endsWith(".tsx");
 
-function isIgnoredFile(filename: string): boolean {
+const isIgnoredFile = (filename: string): boolean => {
   const normalized = normalizePath(filename);
 
   return (
@@ -27,9 +22,9 @@ function isIgnoredFile(filename: string): boolean {
     normalized.includes("/e2e/") ||
     normalized.includes("/routes/api/")
   );
-}
+};
 
-function unwrapExpression(node: TSESTree.Node | null | undefined): TSESTree.Node | null | undefined {
+const unwrapExpression = (node: TSESTree.Node | null | undefined): TSESTree.Node | null | undefined => {
   if (
     node &&
     (node.type === "ChainExpression" ||
@@ -41,9 +36,9 @@ function unwrapExpression(node: TSESTree.Node | null | undefined): TSESTree.Node
   }
 
   return node;
-}
+};
 
-function getPropertyName(node: TSESTree.Node | null | undefined): string {
+const getPropertyName = (node: TSESTree.Node | null | undefined): string => {
   if (!node) {
     return "";
   }
@@ -57,27 +52,22 @@ function getPropertyName(node: TSESTree.Node | null | undefined): string {
   }
 
   return "";
-}
+};
 
-function getJsxAttributeName(node: TSESTree.JSXAttribute): string {
-  return node?.name?.type === "JSXIdentifier" ? node.name.name : "";
-}
+const getJsxAttributeName = (node: TSESTree.JSXAttribute): string =>
+  node?.name?.type === "JSXIdentifier" ? node.name.name : "";
 
-function isJsxEventPropName(name: string): boolean {
-  return /^on[A-Z0-9]/.test(name);
-}
+const isJsxEventPropName = (name: string): boolean => /^on[A-Z0-9]/.test(name);
 
-function isHandleName(name: string): boolean {
-  return /^handle[A-Z0-9]/.test(name);
-}
+const isHandleName = (name: string): boolean => /^handle[A-Z0-9]/.test(name);
 
-function isHandleIdentifier(node: TSESTree.Node): boolean {
+const isHandleIdentifier = (node: TSESTree.Node): boolean => {
   const expression = unwrapExpression(node);
 
   return expression?.type === "Identifier" && isHandleName(expression.name);
-}
+};
 
-function getMemberObjectName(node: TSESTree.Node): string {
+const getMemberObjectName = (node: TSESTree.Node): string => {
   const expression = unwrapExpression(node);
 
   if (expression?.type !== "MemberExpression") {
@@ -87,9 +77,9 @@ function getMemberObjectName(node: TSESTree.Node): string {
   const object = unwrapExpression(expression.object);
 
   return object?.type === "Identifier" ? object.name : "";
-}
+};
 
-function isHandleMember(node: TSESTree.Node, localObjectNames: Set<string>): boolean {
+const isHandleMember = (node: TSESTree.Node, localObjectNames: Set<string>): boolean => {
   const expression = unwrapExpression(node);
 
   if (expression?.type !== "MemberExpression") {
@@ -100,25 +90,9 @@ function isHandleMember(node: TSESTree.Node, localObjectNames: Set<string>): boo
     isHandleName(getPropertyName(expression.property)) &&
     !localObjectNames.has(getMemberObjectName(expression))
   );
-}
+};
 
-function isHandleBindCall(node: TSESTree.Node): boolean {
-  const expression = unwrapExpression(node);
-
-  if (expression?.type !== "CallExpression") {
-    return false;
-  }
-
-  const callee = unwrapExpression(expression.callee);
-
-  if (callee?.type !== "MemberExpression" || getPropertyName(callee.property) !== "bind") {
-    return false;
-  }
-
-  return isHandleIdentifier(callee.object) || isHandleMember(callee.object, new Set<string>());
-}
-
-function isFormHandleSubmitCall(node: TSESTree.Node): boolean {
+const isFormHandleSubmitCall = (node: TSESTree.Node): boolean => {
   const expression = unwrapExpression(node);
 
   if (expression?.type !== "CallExpression") {
@@ -128,9 +102,9 @@ function isFormHandleSubmitCall(node: TSESTree.Node): boolean {
   const callee = unwrapExpression(expression.callee);
 
   return callee?.type === "MemberExpression" && getPropertyName(callee.property) === "handleSubmit";
-}
+};
 
-function isReactHookFormFieldCallback(node: TSESTree.Node): boolean {
+const isReactHookFormFieldCallback = (node: TSESTree.Node): boolean => {
   const expression = unwrapExpression(node);
 
   if (expression?.type !== "MemberExpression") {
@@ -145,9 +119,9 @@ function isReactHookFormFieldCallback(node: TSESTree.Node): boolean {
     object.name === "field" &&
     (propertyName === "onChange" || propertyName === "onBlur")
   );
-}
+};
 
-function isHandleBindCallWithLocalObjects(node: TSESTree.Node, localObjectNames: Set<string>): boolean {
+const isHandleBindCallWithLocalObjects = (node: TSESTree.Node, localObjectNames: Set<string>): boolean => {
   const expression = unwrapExpression(node);
 
   if (expression?.type !== "CallExpression") {
@@ -161,9 +135,9 @@ function isHandleBindCallWithLocalObjects(node: TSESTree.Node, localObjectNames:
   }
 
   return isHandleIdentifier(callee.object) || isHandleMember(callee.object, localObjectNames);
-}
+};
 
-function isAllowedCallbackExpression(node: TSESTree.Node, localObjectNames: Set<string>): boolean {
+const isAllowedCallbackExpression = (node: TSESTree.Node, localObjectNames: Set<string>): boolean => {
   return (
     isHandleIdentifier(node) ||
     isHandleMember(node, localObjectNames) ||
@@ -171,7 +145,7 @@ function isAllowedCallbackExpression(node: TSESTree.Node, localObjectNames: Set<
     isFormHandleSubmitCall(node) ||
     isReactHookFormFieldCallback(node)
   );
-}
+};
 
 const strictJsxCallbackHandlerRule: OxlintRuleModule<"invalidCallback"> = {
   meta: {

@@ -6,22 +6,22 @@ import type { OxlintRuleContext, OxlintRuleModule } from "../../types.js";
 
 type SourceCodeWithFilename = { filename?: string };
 
-function getFilename(context: OxlintRuleContext): string {
+const getFilename = (context: OxlintRuleContext): string => {
   return context.filename ?? context.physicalFilename ?? context.getFilename?.() ?? (context.sourceCode as SourceCodeWithFilename | undefined)?.filename ?? "";
-}
+};
 
-function isProcessEnvMember(node: {
+const isProcessEnvMember = (node: {
   object?: { type?: string; name?: string };
   property?: { type?: string; name?: string };
-}): boolean {
+}): boolean => {
   return node.object?.type === "Identifier" && node.object.name === "process" && node.property?.type === "Identifier" && node.property.name === "env";
-}
+};
 
-function isAllowedIntegrationFile(filename: string): boolean {
+const isAllowedIntegrationFile = (filename: string): boolean => {
   const normalized = filename.replaceAll("\\", "/");
 
   return normalized.includes("/src/integrations/env/") || normalized.includes("/src/integrations/server-env/");
-}
+};
 
 const noProcessEnvOutsideIntegrationRule: OxlintRuleModule<"noProcessEnv"> = {
   meta: {

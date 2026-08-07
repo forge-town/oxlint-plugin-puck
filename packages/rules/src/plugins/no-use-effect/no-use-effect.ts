@@ -37,11 +37,15 @@ const noUseEffectRule: OxlintRuleModule<"noUseEffect"> = {
 
       MemberExpression(node) {
         const property = node.property;
+        const isIdentifierHook =
+          property?.type === "Identifier" && isDisallowedEffectHookName(property.name);
+        const isLiteralHook =
+          property?.type === "Literal" &&
+          typeof property.value === "string" &&
+          isDisallowedEffectHookName(property.value);
 
-        if (property?.type !== "Identifier" || !isDisallowedEffectHookName(property.name)) {
-          if (property?.type !== "Literal" || typeof property.value !== "string" || !isDisallowedEffectHookName(property.value)) {
-            return;
-          }
+        if (!isIdentifierHook && !isLiteralHook) {
+          return;
         }
 
         context.report({
