@@ -1,0 +1,24 @@
+{
+  "name": "@repo/rule-kit",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Internal, rule-agnostic utilities for Oxlint Plugin Puck rules",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check-types": "tsc -p tsconfig.json",
+    "lint": "oxlint --config ./.oxlintrc.json src/",
+    "test": "vitest run",
+    "quality": "bun run check-types && bun run lint && bun run test"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@typescript-eslint/utils": "^8.42.0",
+    "typescript": "5.9.2",
+    "vitest": "^4.1.4"
+  }
+}

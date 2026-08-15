@@ -8,147 +8,140 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as DocsRouteImport } from './routes/docs'
-import { Route as DocsIndexRouteImport } from './routes/docs/index'
-import { Route as DocsGettingStartedRouteImport } from './routes/docs/getting-started'
-import { Route as DocsRulesRuleIdRouteImport } from './routes/docs/rules/$ruleId'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as IndexRouteImport } from "./routes/index";
+import { Route as DocsRouteImport } from "./routes/docs";
+import { Route as DocsIndexRouteImport } from "./routes/docs/index";
+import { Route as DocsGettingStartedRouteImport } from "./routes/docs/getting-started";
+import { Route as DocsRulesRuleIdRouteImport } from "./routes/docs/rules/$ruleId";
 
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const DocsRoute = DocsRouteImport.update({
-  id: '/docs',
-  path: '/docs',
+  id: "/docs",
+  path: "/docs",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const DocsIndexRoute = DocsIndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => DocsRoute,
-} as any)
+} as any);
 const DocsGettingStartedRoute = DocsGettingStartedRouteImport.update({
-  id: '/getting-started',
-  path: '/getting-started',
+  id: "/getting-started",
+  path: "/getting-started",
   getParentRoute: () => DocsRoute,
-} as any)
+} as any);
 const DocsRulesRuleIdRoute = DocsRulesRuleIdRouteImport.update({
-  id: '/rules/$ruleId',
-  path: '/rules/$ruleId',
+  id: "/rules/$ruleId",
+  path: "/rules/$ruleId",
   getParentRoute: () => DocsRoute,
-} as any)
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/docs': typeof DocsRouteWithChildren
-  '/docs/getting-started': typeof DocsGettingStartedRoute
-  '/docs/': typeof DocsIndexRoute
-  '/docs/rules/$ruleId': typeof DocsRulesRuleIdRoute
+  "/": typeof IndexRoute;
+  "/docs": typeof DocsRouteWithChildren;
+  "/docs/getting-started": typeof DocsGettingStartedRoute;
+  "/docs/": typeof DocsIndexRoute;
+  "/docs/rules/$ruleId": typeof DocsRulesRuleIdRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/docs/getting-started': typeof DocsGettingStartedRoute
-  '/docs': typeof DocsIndexRoute
-  '/docs/rules/$ruleId': typeof DocsRulesRuleIdRoute
+  "/": typeof IndexRoute;
+  "/docs/getting-started": typeof DocsGettingStartedRoute;
+  "/docs": typeof DocsIndexRoute;
+  "/docs/rules/$ruleId": typeof DocsRulesRuleIdRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/docs': typeof DocsRouteWithChildren
-  '/docs/getting-started': typeof DocsGettingStartedRoute
-  '/docs/': typeof DocsIndexRoute
-  '/docs/rules/$ruleId': typeof DocsRulesRuleIdRoute
+  __root__: typeof rootRouteImport;
+  "/": typeof IndexRoute;
+  "/docs": typeof DocsRouteWithChildren;
+  "/docs/getting-started": typeof DocsGettingStartedRoute;
+  "/docs/": typeof DocsIndexRoute;
+  "/docs/rules/$ruleId": typeof DocsRulesRuleIdRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    '/' | '/docs' | '/docs/getting-started' | '/docs/' | '/docs/rules/$ruleId'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/docs/getting-started' | '/docs' | '/docs/rules/$ruleId'
-  id:
-    | '__root__'
-    | '/'
-    | '/docs'
-    | '/docs/getting-started'
-    | '/docs/'
-    | '/docs/rules/$ruleId'
-  fileRoutesById: FileRoutesById
+  fileRoutesByFullPath: FileRoutesByFullPath;
+  fullPaths: "/" | "/docs" | "/docs/getting-started" | "/docs/" | "/docs/rules/$ruleId";
+  fileRoutesByTo: FileRoutesByTo;
+  to: "/" | "/docs/getting-started" | "/docs" | "/docs/rules/$ruleId";
+  id: "__root__" | "/" | "/docs" | "/docs/getting-started" | "/docs/" | "/docs/rules/$ruleId";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  DocsRoute: typeof DocsRouteWithChildren
+  IndexRoute: typeof IndexRoute;
+  DocsRoute: typeof DocsRouteWithChildren;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/docs': {
-      id: '/docs'
-      path: '/docs'
-      fullPath: '/docs'
-      preLoaderRoute: typeof DocsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/docs/': {
-      id: '/docs/'
-      path: '/'
-      fullPath: '/docs/'
-      preLoaderRoute: typeof DocsIndexRouteImport
-      parentRoute: typeof DocsRoute
-    }
-    '/docs/getting-started': {
-      id: '/docs/getting-started'
-      path: '/getting-started'
-      fullPath: '/docs/getting-started'
-      preLoaderRoute: typeof DocsGettingStartedRouteImport
-      parentRoute: typeof DocsRoute
-    }
-    '/docs/rules/$ruleId': {
-      id: '/docs/rules/$ruleId'
-      path: '/rules/$ruleId'
-      fullPath: '/docs/rules/$ruleId'
-      preLoaderRoute: typeof DocsRulesRuleIdRouteImport
-      parentRoute: typeof DocsRoute
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/docs": {
+      id: "/docs";
+      path: "/docs";
+      fullPath: "/docs";
+      preLoaderRoute: typeof DocsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/docs/": {
+      id: "/docs/";
+      path: "/";
+      fullPath: "/docs/";
+      preLoaderRoute: typeof DocsIndexRouteImport;
+      parentRoute: typeof DocsRoute;
+    };
+    "/docs/getting-started": {
+      id: "/docs/getting-started";
+      path: "/getting-started";
+      fullPath: "/docs/getting-started";
+      preLoaderRoute: typeof DocsGettingStartedRouteImport;
+      parentRoute: typeof DocsRoute;
+    };
+    "/docs/rules/$ruleId": {
+      id: "/docs/rules/$ruleId";
+      path: "/rules/$ruleId";
+      fullPath: "/docs/rules/$ruleId";
+      preLoaderRoute: typeof DocsRulesRuleIdRouteImport;
+      parentRoute: typeof DocsRoute;
+    };
   }
 }
 
 interface DocsRouteChildren {
-  DocsGettingStartedRoute: typeof DocsGettingStartedRoute
-  DocsIndexRoute: typeof DocsIndexRoute
-  DocsRulesRuleIdRoute: typeof DocsRulesRuleIdRoute
+  DocsGettingStartedRoute: typeof DocsGettingStartedRoute;
+  DocsIndexRoute: typeof DocsIndexRoute;
+  DocsRulesRuleIdRoute: typeof DocsRulesRuleIdRoute;
 }
 
 const DocsRouteChildren: DocsRouteChildren = {
   DocsGettingStartedRoute: DocsGettingStartedRoute,
   DocsIndexRoute: DocsIndexRoute,
   DocsRulesRuleIdRoute: DocsRulesRuleIdRoute,
-}
+};
 
-const DocsRouteWithChildren = DocsRoute._addFileChildren(DocsRouteChildren)
+const DocsRouteWithChildren = DocsRoute._addFileChildren(DocsRouteChildren);
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DocsRoute: DocsRouteWithChildren,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
+import type { getRouter } from "./router.tsx";
+import type { createStart } from "@tanstack/react-start";
+declare module "@tanstack/react-start" {
   interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
+    ssr: true;
+    router: Awaited<ReturnType<typeof getRouter>>;
   }
 }

@@ -5,14 +5,14 @@ import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { cva, type VariantProps } from "class-variance-authority";
 
-import { useIsMobile } from "./hooks/use-mobile.js";
-import { cn } from "./lib/utils.js";
-import { Button } from "./button.js";
-import { Input } from "./input.js";
-import { Separator } from "./separator.js";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "./sheet.js";
-import { Skeleton } from "./skeleton.js";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip.js";
+import { useIsMobile } from "./hooks/use-mobile";
+import { cn } from "./lib/utils";
+import { Button } from "./button";
+import { Input } from "./input";
+import { Separator } from "./separator";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "./sheet";
+import { Skeleton } from "./skeleton";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 import { PanelLeftIcon } from "lucide-react";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";

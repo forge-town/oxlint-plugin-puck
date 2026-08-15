@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { rules } from "./index.js";
+import { rules } from "./index";
 
 const expectedRuleNames = [
   "atomic-component",

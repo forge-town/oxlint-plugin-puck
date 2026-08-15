@@ -1,6 +1,6 @@
 import { describe } from "vitest";
-import plugin from "./no-component-handlers.js";
-import { runRuleTests } from "../../test-utils.js";
+import plugin from "./no-component-handlers";
+import { runRuleTests } from "../../test-utils";
 
 const componentHandlerRule = plugin.rules["no-component-handlers"];
 const handleReturnFunctionRule = plugin.rules["no-handle-return-function"];

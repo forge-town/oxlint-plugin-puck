@@ -1,6 +1,6 @@
 import { describe } from "vitest";
-import plugin from "./atomic-schema.js";
-import { runRuleTests } from "../../test-utils.js";
+import plugin from "./atomic-schema";
+import { runRuleTests } from "../../test-utils";
 
 const rule = plugin.rules["atomic-schema"];
 

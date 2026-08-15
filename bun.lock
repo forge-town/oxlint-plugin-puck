@@ -137,9 +137,22 @@
       "name": "@repo/oxlint-config",
       "version": "0.0.0",
     },
+    "packages/rule-kit": {
+      "name": "@repo/rule-kit",
+      "version": "0.0.0",
+      "devDependencies": {
+        "@repo/typescript-config": "workspace:*",
+        "@typescript-eslint/utils": "^8.42.0",
+        "typescript": "5.9.2",
+        "vitest": "^4.1.4",
+      },
+    },
     "packages/rules": {
       "name": "@repo/rules",
       "version": "0.0.0",
+      "dependencies": {
+        "@repo/rule-kit": "workspace:*",
+      },
       "devDependencies": {
         "@repo/typescript-config": "workspace:*",
         "@types/node": "^25.6.0",
@@ -639,6 +652,8 @@
     "@repo/oxc-formatter-config": ["@repo/oxc-formatter-config@workspace:packages/oxc-formatter-config"],
 
     "@repo/oxlint-config": ["@repo/oxlint-config@workspace:packages/oxlint-config"],
+
+    "@repo/rule-kit": ["@repo/rule-kit@workspace:packages/rule-kit"],
 
     "@repo/rules": ["@repo/rules@workspace:packages/rules"],
 

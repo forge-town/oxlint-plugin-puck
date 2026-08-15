@@ -1,6 +1,6 @@
 import { describe } from "vitest";
-import plugin from "./strict-method-module.js";
-import { runRuleTests } from "../../test-utils.js";
+import plugin from "./strict-method-module";
+import { runRuleTests } from "../../test-utils";
 
 const rule = plugin.rules["strict-method-module"];
 

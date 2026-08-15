@@ -1,6 +1,6 @@
 import { describe } from "vitest";
-import plugin from "./no-use-list-data-fallback.js";
-import { runRuleTests } from "../../test-utils.js";
+import plugin from "./no-use-list-data-fallback";
+import { runRuleTests } from "../../test-utils";
 
 const rule = plugin.rules["no-use-list-data-fallback"];
 

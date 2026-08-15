@@ -1,6 +1,6 @@
 import { describe } from "vitest";
-import plugin from "./no-explicit-unknown.js";
-import { runRuleTests } from "../../test-utils.js";
+import plugin from "./no-explicit-unknown";
+import { runRuleTests } from "../../test-utils";
 
 const rule = plugin.rules["no-explicit-unknown"];
 

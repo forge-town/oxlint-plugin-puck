@@ -2,7 +2,7 @@
  * @fileoverview Oxlint JS plugin: disallow React effect hooks entirely.
  */
 
-import type { OxlintRuleModule } from "../../types.js";
+import type { OxlintRuleModule } from "../../types";
 
 const disallowedEffectHooks = new Set(["useEffect", "useLayoutEffect"]);
 const disallowedEffectAliases = new Set(["runClientLayout"]);

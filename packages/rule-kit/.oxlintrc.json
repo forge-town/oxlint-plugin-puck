@@ -1,0 +1,28 @@
+{
+  "extends": ["../oxlint-config/non-react.oxlintrc.json"],
+  "jsPlugins": [
+    {
+      "name": "puck",
+      "specifier": "oxlint-plugin-puck-published"
+    }
+  ],
+  "rules": {
+    "puck/no-let": "off",
+    "puck/no-use-effect": "off",
+    "puck/no-try": "off",
+    "puck/newline-before-return": "off",
+    "puck/atomic-component": "off",
+    "puck/atomic-schema": "off",
+    "puck/no-component-handlers": "off",
+    "puck/no-handle-return-function": "off",
+    "puck/no-handle-calls-handle": "off",
+    "puck/no-handle-calls-on": "off",
+    "puck/strict-jsx-callback-handler": "off",
+    "puck/strict-jsx-handler-verb": "off",
+    "puck/strict-method-module": "off",
+    "puck/no-use-list-data-fallback": "off",
+    "puck/no-process-env-outside-integration": "off",
+    "puck/no-explicit-unknown": "off",
+    "puck/jsx-sort-props": "off"
+  }
+}

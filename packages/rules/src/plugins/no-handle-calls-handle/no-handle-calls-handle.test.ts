@@ -1,6 +1,6 @@
 import { describe } from "vitest";
-import plugin from "./no-handle-calls-handle.js";
-import { runRuleTests } from "../../test-utils.js";
+import plugin from "./no-handle-calls-handle";
+import { runRuleTests } from "../../test-utils";
 
 const rule = plugin.rules["no-handle-calls-handle"];
 

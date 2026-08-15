@@ -1,6 +1,6 @@
 import { describe } from "vitest";
-import plugin from "./no-process-env-outside-integration.js";
-import { runRuleTests } from "../../test-utils.js";
+import plugin from "./no-process-env-outside-integration";
+import { runRuleTests } from "../../test-utils";
 
 const rule = plugin.rules["no-process-env-outside-integration"];
 

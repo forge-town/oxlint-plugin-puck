@@ -1,6 +1,6 @@
 import { describe } from "vitest";
-import plugin from "./strict-jsx-handler-verb.js";
-import { runRuleTests } from "../../test-utils.js";
+import plugin from "./strict-jsx-handler-verb";
+import { runRuleTests } from "../../test-utils";
 
 const rule = plugin.rules["strict-jsx-handler-verb"];
 

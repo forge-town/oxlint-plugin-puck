@@ -1,6 +1,6 @@
 import { describe } from "vitest";
-import plugin from "./jsx-sort-props.js";
-import { runRuleTests } from "../../test-utils.js";
+import plugin from "./jsx-sort-props";
+import { runRuleTests } from "../../test-utils";
 
 const rule = plugin.rules["jsx-sort-props"];
 

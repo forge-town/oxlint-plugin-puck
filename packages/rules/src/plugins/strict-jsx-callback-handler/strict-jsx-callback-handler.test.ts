@@ -1,6 +1,6 @@
 import { describe } from "vitest";
-import plugin from "./strict-jsx-callback-handler.js";
-import { runRuleTests } from "../../test-utils.js";
+import plugin from "./strict-jsx-callback-handler";
+import { runRuleTests } from "../../test-utils";
 
 const rule = plugin.rules["strict-jsx-callback-handler"];
 

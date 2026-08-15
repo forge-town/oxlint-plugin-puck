@@ -1,7 +1,7 @@
 import { createRequire } from "node:module";
 import tsParser from "@typescript-eslint/parser";
 import type { RuleTester as RuleTesterNamespace } from "eslint";
-import type { OxlintRuleModule } from "./types.js";
+import type { OxlintRuleModule } from "./types";
 
 const require = createRequire(import.meta.url);
 

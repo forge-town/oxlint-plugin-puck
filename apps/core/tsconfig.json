@@ -5,6 +5,8 @@
     "declaration": false,
     "declarationMap": false,
     "erasableSyntaxOnly": true,
+    "module": "Preserve",
+    "moduleResolution": "Bundler",
     "noEmit": true,
     "verbatimModuleSyntax": true
   },

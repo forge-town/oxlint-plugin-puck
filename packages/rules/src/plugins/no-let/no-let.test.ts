@@ -1,6 +1,6 @@
 import { describe } from "vitest";
-import plugin from "./no-let.js";
-import { runRuleTests } from "../../test-utils.js";
+import plugin from "./no-let";
+import { runRuleTests } from "../../test-utils";
 
 const rule = plugin.rules["no-let"];
 

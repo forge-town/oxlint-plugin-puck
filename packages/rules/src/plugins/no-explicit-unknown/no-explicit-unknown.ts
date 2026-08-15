@@ -2,7 +2,7 @@
  * @fileoverview Oxlint JS plugin: Warn on explicit TypeScript `unknown` usage.
  */
 
-import type { OxlintRuleModule } from "../../types.js";
+import type { OxlintRuleModule } from "../../types";
 
 const noExplicitUnknownRule: OxlintRuleModule<"noExplicitUnknown"> = {
   meta: {

@@ -1,6 +1,6 @@
 import { describe } from "vitest";
-import plugin from "./no-use-effect.js";
-import { runRuleTests } from "../../test-utils.js";
+import plugin from "./no-use-effect";
+import { runRuleTests } from "../../test-utils";
 
 const rule = plugin.rules["no-use-effect"];
 

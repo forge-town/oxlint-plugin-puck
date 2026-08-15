@@ -1,7 +1,7 @@
 import { CheckCircle, XCircle, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { cn } from "./lib/utils.js";
-import { Button } from "./button.js";
+import { cn } from "./lib/utils";
+import { Button } from "./button";
 
 export interface ToastProps {
   type: "success" | "error";

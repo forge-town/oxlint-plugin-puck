@@ -1,6 +1,6 @@
 import { describe } from "vitest";
-import plugin from "./newline-before-return.js";
-import { runRuleTests } from "../../test-utils.js";
+import plugin from "./newline-before-return";
+import { runRuleTests } from "../../test-utils";
 
 const rule = plugin.rules["newline-before-return"];
 

@@ -3,7 +3,7 @@
  * All variables must be declared with `const`.
  */
 
-import type { OxlintRuleModule } from "../../types.js";
+import type { OxlintRuleModule } from "../../types";
 
 const noLetRule: OxlintRuleModule<"noLet"> = {
   meta: {
