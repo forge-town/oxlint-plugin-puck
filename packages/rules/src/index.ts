@@ -6,6 +6,7 @@ import noComponentHandlersPlugin from "./plugins/no-component-handlers/no-compon
 import noExplicitUnknownPlugin from "./plugins/no-explicit-unknown/no-explicit-unknown.ts";
 import noHandleCallsHandlePlugin from "./plugins/no-handle-calls-handle/no-handle-calls-handle.ts";
 import noHandleCallsOnPlugin from "./plugins/no-handle-calls-on/no-handle-calls-on.ts";
+import noImportExportAliasPlugin from "./plugins/no-import-export-alias/no-import-export-alias.ts";
 import noLetPlugin from "./plugins/no-let/no-let.ts";
 import noProcessEnvOutsideIntegrationPlugin from "./plugins/no-process-env-outside-integration/no-process-env-outside-integration.ts";
 import noTryPlugin from "./plugins/no-try/no-try.ts";
@@ -24,6 +25,7 @@ export const rules = {
   ...noExplicitUnknownPlugin.rules,
   ...noHandleCallsHandlePlugin.rules,
   ...noHandleCallsOnPlugin.rules,
+  ...noImportExportAliasPlugin.rules,
   ...noLetPlugin.rules,
   ...noProcessEnvOutsideIntegrationPlugin.rules,
   ...noTryPlugin.rules,

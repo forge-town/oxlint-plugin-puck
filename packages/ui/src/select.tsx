@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Select as SelectPrimitive } from "@base-ui/react/select";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 
+import SelectPrimitive from "./integrations/base-ui/select";
 import { cn } from "./lib/utils";
 
 const Select = SelectPrimitive.Root;

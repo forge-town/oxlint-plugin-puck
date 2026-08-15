@@ -11,6 +11,7 @@ const expectedRuleNames = [
   "no-handle-calls-handle",
   "no-handle-calls-on",
   "no-handle-return-function",
+  "no-import-export-alias",
   "no-let",
   "no-process-env-outside-integration",
   "no-try",
