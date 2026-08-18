@@ -1,5 +1,5 @@
 {
-  "name": "oxlint-plugin-puck",
+  "name": "@forge-town/oxlint-plugin-puck-monorepo",
   "private": true,
   "scripts": {
     "build": "turbo run build",

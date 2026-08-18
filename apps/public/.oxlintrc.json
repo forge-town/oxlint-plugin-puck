@@ -1,0 +1,9 @@
+{
+  "extends": ["../../packages/oxlint-config/non-react.oxlintrc.json"],
+  "jsPlugins": [
+    {
+      "name": "puck",
+      "specifier": "oxlint-plugin-puck-published"
+    }
+  ]
+}

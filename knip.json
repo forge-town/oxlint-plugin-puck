@@ -8,6 +8,9 @@
     "apps/core": {
       "project": ["src/**/*.ts"]
     },
+    "apps/public": {
+      "project": ["src/**/*.ts"]
+    },
     "packages/rule-kit": {
       "project": ["src/**/*.ts"]
     },
