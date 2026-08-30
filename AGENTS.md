@@ -184,7 +184,7 @@ import { cn } from "@repo/ui/lib/utils";
 
 - 16 个规则源文件均为 `OxlintRuleModule<MessageIds>` 类型化模块，`meta.type`、`meta.messages`、`create(context)` 返回 `TSESLint.RuleListener`
 - 共享类型在 `src/types.ts`：`OxlintRuleContext`（扩展 oxlint 的 `filename`/`physicalFilename`）、`OxlintRuleModule`
-- 语法约束 `erasableSyntaxOnly`（禁 enum/namespace/参数属性），内部源码包使用 Bundler 模块解析；TypeScript 的相对 import/export 路径禁止 `.js` 后缀
+- 语法约束 `erasableSyntaxOnly`（禁 enum/namespace/参数属性），模块解析 NodeNext，类型 import 一律带 `.js` 后缀
 - 仓库内 oxlint 通过 npm alias `oxlint-plugin-puck-published` 加载已发布的 `@forge-town/oxlint-plugin-puck` bundle，形成自举；不再从 `.oxlintrc.json` 直接加载 `apps/core/src/index.ts`
 - 新增/修改规则后执行：`bun run check-types`（tsc 严格模式）→ `bun run lint`（加载最近发布的 plugin，规则源码包保持规则豁免）→ `bun run build`（产出待发布 bundle）
 - `packages/rules` 禁止发布；`apps/core` 是唯一 Changesets 发布单元，构建产物不得保留 `@repo/*` 运行时依赖
