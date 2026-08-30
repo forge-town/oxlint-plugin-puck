@@ -10,8 +10,8 @@ import {
   type ControllerFieldState,
   type UseFormStateReturn,
 } from "react-hook-form";
-import { cn } from "./lib/utils.js";
-import { Label } from "./label.js";
+import { cn } from "./lib/utils";
+import { Label } from "./label";
 
 const Form: typeof FormProvider = FormProvider;
 

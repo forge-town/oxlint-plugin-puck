@@ -1,5 +1,5 @@
 import type { TSESLint, TSESTree } from "@typescript-eslint/utils";
-import type { OxlintRuleContext, OxlintRuleModule } from "../../types.js";
+import type { OxlintRuleContext, OxlintRuleModule } from "../../types";
 
 /**
  * @fileoverview Oxlint JS plugin: enforce atomic React component modules.
@@ -43,7 +43,7 @@ const isIgnoredFile = (filename: string): boolean => {
     normalized.includes("/routes/") ||
     normalized.includes("/_store/") ||
     normalized.includes("/store/") ||
-    /\.(?:test|spec|stories)\.tsx$/.test(normalized)
+    /\.(?:spec|stories)\.tsx$/.test(normalized)
   );
 };
 

@@ -1,5 +1,5 @@
 import type { TSESTree } from "@typescript-eslint/utils";
-import type { OxlintRuleContext, OxlintRuleModule } from "../../types.js";
+import type { OxlintRuleContext, OxlintRuleModule } from "../../types";
 
 /**
  * @fileoverview Oxlint JS plugin: enforce strict method module naming.

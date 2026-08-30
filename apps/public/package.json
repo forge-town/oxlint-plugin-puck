@@ -1,0 +1,39 @@
+{
+  "name": "oxlint-plugin-puck",
+  "version": "0.0.0",
+  "description": "A focused Oxlint plugin for safer JavaScript and TypeScript",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/forge-town/oxlint-plugin-puck.git",
+    "directory": "apps/public"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target node --format esm --packages bundle",
+    "check-types": "tsc -p tsconfig.json",
+    "lint": "oxlint --config ./.oxlintrc.json src/",
+    "prepack": "bun run build",
+    "test": "bun run build && vitest run",
+    "quality": "bun run check-types && bun run lint && bun run test"
+  },
+  "devDependencies": {
+    "@repo/rules": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^25.6.0",
+    "typescript": "5.9.2",
+    "vitest": "^4.1.4"
+  }
+}

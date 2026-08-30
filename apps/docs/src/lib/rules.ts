@@ -52,7 +52,6 @@ export const rules = [
       "/routes/",
       "/_store/",
       "/store/",
-      "*.test.tsx",
       "*.spec.tsx",
       "*.stories.tsx",
     ],
@@ -462,6 +461,48 @@ const parse = (input: Data) => input;`,
         code: `const handleSubmit = () => {
   submitForm();
 };`,
+      },
+    ],
+  },
+  {
+    id: "no-import-export-alias",
+    name: "no-import-export-alias",
+    title: "禁止 import/export 别名",
+    plugin: "puck",
+    pluginKey: "puck/no-import-export-alias",
+    description: "Disallow aliases in import and export syntax.",
+    details:
+      "禁止在静态 import 和 export 中使用命名别名，并默认禁止 namespace import。可通过 `allowNamespaceImports` 放行 `import * as` 与 `import type * as`；namespace export 仍然禁止。TypeScript 类型断言与对象解构别名不受影响。",
+    type: "suggestion",
+    messages: [
+      {
+        id: "noAlias",
+        text: "Do not use `as` aliases in imports or exports.",
+      },
+    ],
+    options: [
+      {
+        name: "allowNamespaceImports",
+        type: "boolean",
+        default: "false",
+        description: "允许 namespace import，包括 type-only namespace import。",
+      },
+    ],
+    examples: [
+      {
+        title: "❌ 重命名导入",
+        valid: false,
+        code: `import { Button as ButtonPrimitive } from "library";`,
+      },
+      {
+        title: "❌ namespace 导入",
+        valid: false,
+        code: `import * as React from "react";`,
+      },
+      {
+        title: "✅ 直接导入原始名称",
+        valid: true,
+        code: `import { Button } from "library";`,
       },
     ],
   },

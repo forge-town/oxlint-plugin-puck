@@ -2,7 +2,7 @@
  * @fileoverview Oxlint JS plugin: require JSX handler names to end with the event prop verb.
  */
 
-import type { OxlintRuleContext, OxlintRuleModule, TSESTree } from "../../types.js";
+import type { OxlintRuleContext, OxlintRuleModule, TSESTree } from "../../types";
 
 type SourceCodeWithFilename = { filename?: string };
 

@@ -4,10 +4,12 @@
   "private": true,
   "description": "Internal rule implementations for Oxlint Plugin Puck",
   "license": "MIT",
-  "exports": {
-    ".": "./src/index.ts"
-  },
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./no-let": "./src/plugins/no-let/no-let.ts",
+    "./no-try": "./src/plugins/no-try/no-try.ts"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "check-types": "tsc -p tsconfig.json",
@@ -15,12 +17,17 @@
     "test": "vitest run",
     "quality": "bun run check-types && bun run lint && bun run test"
   },
+  "dependencies": {
+    "@repo/rule-kit": "workspace:*"
+  },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^25.6.0",
-    "@typescript-eslint/parser": "^8.66.0",
-    "@typescript-eslint/utils": "^8.42.0",
+    "@typescript-eslint/parser": "8.67.0",
+    "@typescript-eslint/rule-tester": "8.67.0",
+    "@typescript-eslint/utils": "8.67.0",
     "eslint": "^10",
+    "outdent": "^0.5.0",
     "typescript": "5.9.2",
     "vitest": "^4.1.4"
   }

@@ -1,20 +1,39 @@
-import { createRequire } from "node:module";
+import {
+  RuleTester,
+  type InvalidTestCase,
+  type ValidTestCase,
+} from "@typescript-eslint/rule-tester";
 import tsParser from "@typescript-eslint/parser";
-import type { RuleTester as RuleTesterNamespace } from "eslint";
-import type { OxlintRuleModule } from "./types.js";
-
-const require = createRequire(import.meta.url);
-
-const RuleTester: typeof RuleTesterNamespace = require("eslint").RuleTester;
+import { afterAll, describe, it } from "vitest";
+import type { OxlintRuleModule } from "./types";
 
 const DEFAULT_PARSER_OPTIONS = {
   ecmaVersion: 2022,
   sourceType: "module",
   ecmaFeatures: { jsx: true },
-};
+} as const;
 
-type ValidTestCase = RuleTesterNamespace.ValidTestCase;
-type InvalidTestCase = RuleTesterNamespace.InvalidTestCase;
+RuleTester.afterAll = afterAll;
+RuleTester.describe = describe;
+RuleTester.it = it;
+RuleTester.itOnly = it.only;
+RuleTester.itSkip = it.skip;
+
+export type ValidRuleTestCase<Options extends readonly unknown[] = readonly unknown[]> =
+  ValidTestCase<Options>;
+
+export type InvalidRuleTestCase<
+  MessageIds extends string,
+  Options extends readonly unknown[] = readonly unknown[],
+> = InvalidTestCase<MessageIds, Options>;
+
+export const createRuleTester = (): RuleTester =>
+  new RuleTester({
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: DEFAULT_PARSER_OPTIONS,
+    },
+  });
 
 export const runRuleTests = <
   TMessageIds extends string,
@@ -23,19 +42,9 @@ export const runRuleTests = <
   name: string,
   rule: OxlintRuleModule<TMessageIds, TOptions>,
   tests: {
-    valid: Array<string | ValidTestCase>;
-    invalid: Array<InvalidTestCase>;
+    valid: Array<string | ValidTestCase<TOptions>>;
+    invalid: Array<InvalidTestCase<TMessageIds, TOptions>>;
   }
 ): void => {
-  const ruleTester = new RuleTester({
-    languageOptions: {
-      parser: tsParser,
-      parserOptions: DEFAULT_PARSER_OPTIONS,
-    },
-  });
-
-  ruleTester.run(name, rule as never, {
-    valid: tests.valid as never,
-    invalid: tests.invalid as never,
-  });
+  createRuleTester().run(name, rule, tests);
 };
