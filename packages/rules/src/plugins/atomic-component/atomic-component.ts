@@ -43,7 +43,7 @@ const isIgnoredFile = (filename: string): boolean => {
     normalized.includes("/routes/") ||
     normalized.includes("/_store/") ||
     normalized.includes("/store/") ||
-    /\.(?:test|spec|stories)\.tsx$/.test(normalized)
+    /\.(?:spec|stories)\.tsx$/.test(normalized)
   );
 };
 

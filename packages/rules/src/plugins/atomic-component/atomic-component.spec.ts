@@ -31,7 +31,7 @@ describe("atomic-component", () => {
             return <button>click</button>;
           }
         `,
-        filename: "src/components/Button.test.tsx",
+        filename: "src/components/Button.spec.tsx",
       },
       {
         code: "export function other() { return null; }",

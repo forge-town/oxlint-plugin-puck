@@ -52,7 +52,6 @@ export const rules = [
       "/routes/",
       "/_store/",
       "/store/",
-      "*.test.tsx",
       "*.spec.tsx",
       "*.stories.tsx",
     ],

@@ -33,7 +33,7 @@ describe("no-component-handlers", () => {
       },
       {
         code: "export const Button = () => <button onClick={() => {}} />;",
-        filename: "src/components/Button.test.tsx",
+        filename: "src/components/Button.spec.tsx",
       },
     ],
     invalid: [
