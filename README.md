@@ -120,3 +120,15 @@ bun run release
 ```
 
 不要把 npm 或 GitHub token 写入或提交到 `.npmrc`。
+
+## 开源协作
+
+本仓库以 MIT License 开源。参与开发前请阅读：
+
+- [贡献指南](./CONTRIBUTING.md)
+- [安全策略](./SECURITY.md)
+- [行为准则](./CODE_OF_CONDUCT.md)
+
+提交 Pull Request 后，GitHub Actions 会自动运行 `bun run quality` 和 `bun run build`。
+`main` 的合并约定是通过 Pull Request、完成维护者审阅并使用 squash merge；这些要求
+需要仓库维护者在 GitHub branch ruleset 中启用。
