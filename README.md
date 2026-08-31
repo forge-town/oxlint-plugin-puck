@@ -1,6 +1,6 @@
 # Oxlint Plugin Puck
 
-Forge Town 维护的 Oxlint JS plugin。规则统一在 `packages/rules` 维护，并通过两个独立 app 分发：公开 npm 包 `oxlint-plugin-puck` 首期只提供 `no-let` 和 `no-try-catch`，私有 GitHub Package `@forge-town/oxlint-plugin-puck` 提供完整内部规则集。
+Forge Town 维护的 Oxlint JS plugin。规则统一在 `packages/rules` 维护，并通过两个独立 app 分发：公开 npm 包 `oxlint-plugin-puck` 提供 `no-let`、`no-try-catch`、`no-use-effect`、`newline-before-return` 和 `jsx-sort-props`，私有 GitHub Package `@forge-town/oxlint-plugin-puck` 提供完整内部规则集。
 
 ## 仓库结构
 
@@ -57,7 +57,10 @@ bun add --dev oxlint oxlint-plugin-puck
   ],
   "rules": {
     "puck/no-let": "error",
-    "puck/no-try-catch": "error"
+    "puck/no-try-catch": "error",
+    "puck/no-use-effect": "error",
+    "puck/newline-before-return": "error",
+    "puck/jsx-sort-props": "error"
   }
 }
 ```
