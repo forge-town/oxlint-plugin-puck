@@ -8,7 +8,10 @@
   "exports": {
     ".": "./src/index.ts",
     "./no-let": "./src/plugins/no-let/no-let.ts",
-    "./no-try": "./src/plugins/no-try/no-try.ts"
+    "./no-try": "./src/plugins/no-try/no-try.ts",
+    "./no-use-effect": "./src/plugins/no-use-effect/no-use-effect.ts",
+    "./newline-before-return": "./src/plugins/newline-before-return/newline-before-return.ts",
+    "./jsx-sort-props": "./src/plugins/jsx-sort-props/jsx-sort-props.ts"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
