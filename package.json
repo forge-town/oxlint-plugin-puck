@@ -28,7 +28,7 @@
     "@oxlint/binding-darwin-arm64": "^1.59.0",
     "@repo/oxc-formatter-config": "workspace:*",
     "@rollup/rollup-darwin-arm64": "^4.60.1",
-    "@typescript-eslint/utils": "8.67.0",
+    "@typescript-eslint/utils": "8.68.0",
     "knip": "^6.4.0",
     "lefthook": "^2.1.9",
     "madge": "^8.0.0",
